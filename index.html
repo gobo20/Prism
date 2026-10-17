@@ -527,11 +527,12 @@ document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-e
 (function () {
   if (!('serviceWorker' in navigator) || location.protocol !== 'https:') return;
   const hadController = Boolean(navigator.serviceWorker.controller);
+  let reloadedForUpdate = false;
   if (hadController) {
     navigator.serviceWorker.addEventListener('controllerchange', function () {
-      // Reload only when an already-controlled page receives a newer worker.
-      if (!sessionStorage.getItem('prism-sw-reloaded')) {
-        sessionStorage.setItem('prism-sw-reloaded', '1');
+      // Reload once when an already-controlled page receives a newer worker.
+      if (!reloadedForUpdate) {
+        reloadedForUpdate = true;
         location.reload();
       }
     }, { once: true });
