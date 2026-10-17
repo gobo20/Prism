@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <script>
 // === GoboGames FIXES für Handy Performance + Werbung ===
@@ -518,6 +518,28 @@ document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-e
   },true);
   setTimeout(syncHomeButtons,1000);
   setInterval(syncHomeButtons,700);
+})();
+</script>
+
+
+
+<!-- Register the PWA worker and check for deployed updates. -->
+<script id="prism-service-worker-registration">
+(function () {
+  if (!('serviceWorker' in navigator) || location.protocol !== 'https:') return;
+  let reloadedForUpdate = false;
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (reloadedForUpdate) return;
+      reloadedForUpdate = true;
+      location.reload();
+    }, { once: true });
+  }
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+      .then(function (registration) { return registration.update(); })
+      .catch(function (error) { console.warn('Prism service worker registration failed:', error); });
+  }, { once: true });
 })();
 </script>
 
