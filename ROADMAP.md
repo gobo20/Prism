@@ -9,7 +9,8 @@ This roadmap separates urgent reliability fixes from feature work. Do not merge 
 - [x] Prefer fresh HTML after deployment; use the cached app shell only when offline.
 - [x] Register the service worker and request an update when the page loads.
 - [x] Set the document language to German.
-- [ ] Verify every manifest icon and screenshot URL returns HTTP 200 with the expected file type.
+- [x] Point manifest icons/shortcuts at the existing root-level PNG files and remove screenshot references to missing files.
+- [ ] Verify the deployed manifest and icon URLs return HTTP 200 with the expected file type.
 - [ ] Fix the Android “old home UI returns” issue by removing conflicting DOM polling/injection rather than adding more competing timers.
 - [ ] Fix the “Weiter” white screen and confirm level index, animation state, and React state reset consistently.
 - [ ] Test canvas responsiveness after orientation changes and the mobile frame-rate cap with touch input.
