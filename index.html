@@ -521,5 +521,28 @@ document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-e
 })();
 </script>
 
+
+<!-- Prism v1.7.1: keep installed Android PWAs on the current UI -->
+<script id="prism-pwa-update-fix">
+(function () {
+  if (!('serviceWorker' in navigator) || location.protocol !== 'https:') return;
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  if (hadController) {
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      // Reload only when an already-controlled page receives a newer worker.
+      if (!sessionStorage.getItem('prism-sw-reloaded')) {
+        sessionStorage.setItem('prism-sw-reloaded', '1');
+        location.reload();
+      }
+    }, { once: true });
+  }
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js?build=23', { updateViaCache: 'none' })
+      .then(function (registration) { return registration.update(); })
+      .catch(function (error) { console.warn('Prism PWA update check failed:', error); });
+  }, { once: true });
+})();
+</script>
+
 </body>
 </html>
