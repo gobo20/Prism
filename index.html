@@ -139,6 +139,23 @@
 @media(max-width:900px){.gxv-grid{grid-template-columns:repeat(2,1fr)}.gxv-levels{grid-template-columns:repeat(2,1fr)}.gxv-stage{grid-template-columns:1fr}.gxv-stage aside{display:none}.gxv-panel{inset:2vh 2vw}}
 @media(max-width:560px){.gxv-grid{grid-template-columns:1fr}.gxv-levels{grid-template-columns:1fr}.gxv-panel header{padding:18px}.gxv-wallet,.gxv-eventstats{padding:12px 18px}.gxv-grid{padding:4px 18px 20px}.gxv-levels{padding:5px 18px 18px}.gxv-wide{margin-left:18px;width:calc(100% - 36px)}.gxv-moves{display:none}.gxv-stage{padding:8px}.gxv-playbar{padding:8px}.gxv-board{border-radius:14px}}
 </style>
+
+<!-- Prism mobile performance: keep the level-complete overlay lightweight on phones. -->
+<style id="prism-mobile-win-performance">
+@media (max-width: 600px), (prefers-reduced-motion: reduce) {
+  /* Large backdrop blur is expensive to composite on lower-end mobile GPUs. */
+  #root [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  /* The win card remains visible; only its decorative infinite pulses are disabled. */
+  #root [style*="starPulse"],
+  #root [style*="coinBounce"] {
+    animation: none !important;
+  }
+}
+</style>
+
 </head>
 <body>
   <div id="root"></div>
