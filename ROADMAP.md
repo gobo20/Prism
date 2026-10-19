@@ -11,9 +11,10 @@ This roadmap separates urgent reliability fixes from feature work. Do not merge 
 - [x] Set the document language to German.
 - [x] Point manifest icons/shortcuts at the existing root-level PNG files and remove screenshot references to missing files.
 - [ ] Verify the deployed manifest and icon URLs return HTTP 200 with the expected file type.
-- [ ] Fix the Android “old home UI returns” issue by removing conflicting DOM polling/injection rather than adding more competing timers.
-- [ ] Fix the “Weiter” white screen and confirm level index, animation state, and React state reset consistently.
-- [ ] Test canvas responsiveness after orientation changes and the mobile frame-rate cap with touch input.
+- [ ] Fix the Android “old home UI returns” issue by removing conflicting DOM polling/injection rather than adding more competing timers. **Latest user test: home UI still overlaps.**
+- [x] User test: the “Weiter” white screen did not recur in the tested build; keep regression testing across more levels.
+- [ ] Investigate reported performance of about 10 FPS on the user's test device; profile the render loop, repeated DOM work, canvas redraws and animation effects before changing the frame cap.
+- [ ] Test canvas responsiveness after orientation changes and touch input.
 - [ ] Replace fake ad success and forced-premium localStorage overrides with an explicit web fallback. An unavailable ad must not silently pretend a real ad was watched or a purchase was made.
 - [ ] Validate PWABuilder against the deployed Netlify URL and capture any remaining error message.
 
@@ -26,6 +27,12 @@ This roadmap separates urgent reliability fixes from feature work. Do not merge 
 - [ ] Rotate the phone during the menu and during a level; verify canvas sizing and touch controls.
 - [ ] Go offline after the first successful load; verify the cached app shell opens.
 - [ ] Run PWABuilder on the deployed URL and verify manifest, icons, and screenshots.
+
+## Next test pass — UI and performance
+
+- [ ] Remove the competing injected home navigation and integrate the home/event navigation into one source of truth.
+- [ ] Use the new [AUTUMN_EVENT_REDESIGN.md](./AUTUMN_EVENT_REDESIGN.md) as the event implementation brief.
+- [ ] Keep the autumn event redesign on the test branch until mobile layout, rewards, save compatibility and level flow pass regression testing.
 
 ## v1.8.0 — Save data and game progression
 
