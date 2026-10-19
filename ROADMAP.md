@@ -13,7 +13,8 @@ This roadmap separates urgent reliability fixes from feature work. Do not merge 
 - [ ] Verify the deployed manifest and icon URLs return HTTP 200 with the expected file type.
 - [ ] Fix the Android “old home UI returns” issue by removing conflicting DOM polling/injection rather than adding more competing timers. **Latest user test: home UI still overlaps.**
 - [x] User test: the “Weiter” white screen did not recur in the tested build; keep regression testing across more levels.
-- [ ] Investigate reported performance of about 10 FPS on the user's test device; profile the render loop, repeated DOM work, canvas redraws and animation effects before changing the frame cap.
+- [x] User reports gameplay now reaches about 60 FPS on the test phone (device measurement cap); level-complete overlay still drops to about 2 FPS.
+- [ ] Test the mobile level-complete overlay optimization: remove expensive backdrop blur and decorative infinite pulses on narrow screens/reduced-motion devices. If the drop remains, profile particle updates and completion-state renders.
 - [ ] Test canvas responsiveness after orientation changes and touch input.
 - [ ] Replace fake ad success and forced-premium localStorage overrides with an explicit web fallback. An unavailable ad must not silently pretend a real ad was watched or a purchase was made.
 - [ ] Validate PWABuilder against the deployed Netlify URL and capture any remaining error message.
@@ -31,6 +32,7 @@ This roadmap separates urgent reliability fixes from feature work. Do not merge 
 ## Next test pass — UI and performance
 
 - [ ] Remove the competing injected home navigation and integrate the home/event navigation into one source of truth.
+- [ ] Re-test level-complete FPS after the lightweight-overlay patch; preserve the 60 FPS normal gameplay result.
 - [ ] Use the new [AUTUMN_EVENT_REDESIGN.md](./AUTUMN_EVENT_REDESIGN.md) as the event implementation brief.
 - [ ] Keep the autumn event redesign on the test branch until mobile layout, rewards, save compatibility and level flow pass regression testing.
 
