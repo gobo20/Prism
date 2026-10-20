@@ -13,8 +13,8 @@ This roadmap separates urgent reliability fixes from feature work. Do not merge 
 - [ ] Verify the deployed manifest and icon URLs return HTTP 200 with the expected file type.
 - [ ] Fix the Android “old home UI returns” issue by removing conflicting DOM polling/injection rather than adding more competing timers. **Latest user test: home UI still overlaps.**
 - [x] User test: the “Weiter” white screen did not recur in the tested build; keep regression testing across more levels.
-- [x] User reports gameplay now reaches about 60 FPS on the test phone (device measurement cap); level-complete overlay still drops to about 2 FPS.
-- [ ] Test the mobile level-complete overlay optimization: remove expensive backdrop blur and decorative infinite pulses on narrow screens/reduced-motion devices. If the drop remains, profile particle updates and completion-state renders.
+- [x] User reports gameplay reaches about 60 FPS on the test phone (device measurement cap); completion overlay improved from about 2 FPS to about 10 FPS after the first optimization.
+- [ ] Re-test the second mobile completion optimization: reduce confetti from 90 to 18 particles, update at 25 FPS, and shorten it to 1.4 seconds. User-device result still pending.
 - [ ] Test canvas responsiveness after orientation changes and touch input.
 - [ ] Replace fake ad success and forced-premium localStorage overrides with an explicit web fallback. An unavailable ad must not silently pretend a real ad was watched or a purchase was made.
 - [ ] Validate PWABuilder against the deployed Netlify URL and capture any remaining error message.
@@ -31,10 +31,11 @@ This roadmap separates urgent reliability fixes from feature work. Do not merge 
 
 ## Next test pass — UI and performance
 
-- [ ] Remove the competing injected home navigation and integrate the home/event navigation into one source of truth.
+- [ ] Remove the competing injected home navigation and integrate the home navigation into one source of truth; the old event entry points are hidden pending a clean rebuild.
 - [ ] Re-test level-complete FPS after the lightweight-overlay patch; preserve the 60 FPS normal gameplay result.
-- [ ] Use the new [AUTUMN_EVENT_REDESIGN.md](./AUTUMN_EVENT_REDESIGN.md) as the event implementation brief.
-- [ ] Keep the autumn event redesign on the test branch until mobile layout, rewards, save compatibility and level flow pass regression testing.
+- [x] Remove the old autumn-event code, 12 event levels, separate event currency and event menu from the test branch.
+- [x] Make all 12 skins (including the three autumn-themed looks) purchasable with in-game Coins; Classic remains free.
+- [ ] Rebuild the autumn event from scratch using [AUTUMN_EVENT_REDESIGN.md](./AUTUMN_EVENT_REDESIGN.md) only as a design brief; do not reuse the removed event implementation.
 
 ## v1.8.0 — Save data and game progression
 
