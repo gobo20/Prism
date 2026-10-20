@@ -582,7 +582,7 @@ function renderHub(){
 function showHub(){const root=eventRoot();if(!root)return;root.querySelector('[data-hub]').style.display='block';root.querySelector('[data-game]').classList.remove('active');cancelAnimationFrame(frame);renderHub()}
 function loadLevel(i){
  levelIndex=i;mirrors=EVENT_LEVELS[i].mirrors.map(m=>({x:m[0],y:m[1],slash:m[2]}));
- const root=eventRoot();root.querySelector('[data-hub]').style.display='none';root.querySelector('[data-game]').classList.add('active');root.querySelector('[data-level-title]').textContent='Level '+(i+1)+' · '+EVENT_LEVELS[i].name;root.querySelector('[data-message]').textContent='Tippe auf Spiegel, um sie zu drehen.';root.querySelector('[data-reward]').classList.remove('show');root.querySelector('[data-moves]').textContent='0 Züge';drawBoard();
+ const root=eventRoot();root.querySelector('[data-hub]').style.display='none';root.querySelector('[data-game]').classList.add('active');root.querySelector('[data-level-title]').textContent='Level '+(i+1)+' · '+EVENT_LEVELS[i].name;root.querySelector('[data-message]').textContent='Tippe auf Spiegel, um sie zu drehen.';root.querySelector('[data-reward]').classList.remove('show');root.querySelector('[data-moves]').dataset.n='0';root.querySelector('[data-moves]').textContent='0 Züge';drawBoard();
 }
 function drawBoard(){
  if(!canvas||!ctx||!eventRoot())return;
