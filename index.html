@@ -568,6 +568,7 @@ function openEvent(){
  root.querySelector('.gce-back').onclick=showHub;root.querySelector('.gce-reset').onclick=()=>loadLevel(levelIndex);
  root.querySelector('.gce-check').onclick=checkSolution;
  canvas=root.querySelector('canvas');ctx=canvas.getContext('2d');
+ canvas.addEventListener('pointerdown',function(ev){const r=canvas.getBoundingClientRect(),x=(ev.clientX-r.left)/r.width*5,y=(ev.clientY-r.top)/r.height*5;const m=mirrors.find(q=>Math.abs(q.x+.5-x)<.48&&Math.abs(q.y+.5-y)<.48);if(m){m.slash=1-m.slash;const mv=root.querySelector('[data-moves]');const n=Number(mv.dataset.n||0)+1;mv.dataset.n=String(n);mv.textContent=n+' Züge';drawBoard()} });
  renderHub();
 }
 function renderHub(){
@@ -612,17 +613,12 @@ function checkSolution(){
  const root=eventRoot();if(!root)return;
  const path=traceBeam(),hit=path.some(p=>p.x===4&&p.y===EVENT_LEVELS[levelIndex].target);
  if(!hit){root.querySelector('[data-message]').textContent='Noch nicht! Drehe die Spiegel anders und teste erneut.';drawBoard();return}
- if(!completed.includes(levelIndex)){completed.push(levelIndex);saveDone()}
+ let reward=0;if(!completed.includes(levelIndex)){completed.push(levelIndex);saveDone();reward=25+(levelIndex+1)*5;const old=Math.max(0,parseInt(localStorage.getItem('prism-coins')||'0',10)||0);localStorage.setItem('prism-coins',String(old+reward));}
  root.querySelector('[data-message]').textContent='✨ Perfekt! Das Weihnachtslicht leuchtet!';
- root.querySelector('[data-reward]').textContent='🎁 Levelbelohnung: '+(25+(levelIndex+1)*5)+' Coins (Belohnung wird nach Verbindung mit dem Hauptspiel-Speicher aktiviert).';
+ root.querySelector('[data-reward]').textContent=reward?'🎁 '+reward+' Coins wurden deinem normalen Coin-Konto gutgeschrieben!':'🎁 Dieses Level hast du bereits abgeschlossen – keine doppelte Belohnung.';
  root.querySelector('[data-reward]').classList.add('show');drawBoard();renderHub();
  // Keep the current puzzle visible; the hub updates only when the player taps back.
 }
-if(canvas)canvas.addEventListener('pointerdown',function(ev){
- const r=canvas.getBoundingClientRect(),x=(ev.clientX-r.left)/r.width*5,y=(ev.clientY-r.top)/r.height*5;
- const m=mirrors.find(q=>Math.abs(q.x+.5-x)<.48&&Math.abs(q.y+.5-y)<.48);
- if(m){m.slash=1-m.slash;const root=eventRoot();root.querySelector('[data-moves]').textContent=(Number(root.querySelector('[data-moves]').dataset.n||0)+1)+' Züge';root.querySelector('[data-moves]').dataset.n=String(Number(root.querySelector('[data-moves]').dataset.n||0)+1);drawBoard()}
-});
 window.goboOpenEvent=openEvent;
 })();
 </script>
