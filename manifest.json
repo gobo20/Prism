@@ -2,7 +2,7 @@
   "id": "/",
   "name": "GoboGames Prism Laser Puzzle",
   "short_name": "Prism Puzzle",
-  "description": "80 Laser-Puzzle-Level mit Coins, Gems, Daily/Weekly Quests, Premium-Skins und limitiertem Herbst-Event.",
+  "description": "80 Laser-Puzzle-Level mit Coins, Gems, Daily/Weekly Quests, Premium-Skins und limitiertem Weihnachts-Event.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
