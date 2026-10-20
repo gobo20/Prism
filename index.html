@@ -539,19 +539,37 @@ function openCashStore(){
 }
 window.goboOpenCashShop=openCashStore;
 
+function makeChristmasPuzzle(name,target,variant){
+ const routes={
+  0:[[1,2,0],[1,1,0],[3,1,0],[3,0,0]],
+  1:[[1,2,0],[1,1,0]],
+  2:[[1,2,0],[1,1,0],[3,1,1],[3,2,1]],
+  3:[[1,2,1],[1,3,1]],
+  4:[[1,2,1],[1,3,1],[3,3,1],[3,4,1]]
+ };
+ const mirrors=routes[target].map(m=>m.slice());
+ // Every puzzle starts one turn away from its verified route, so it is not pre-solved.
+ const last=mirrors.length-1;
+ mirrors[last][2]=1-mirrors[last][2];
+ // Optional decoy mirror outside the intended laser path.
+ const decoys=[[4,4,variant%2],[4,0,(variant+1)%2],[2,4,variant%2],[2,0,(variant+1)%2]];
+ const d=decoys[variant%decoys.length];
+ if(!mirrors.some(m=>m[0]===d[0]&&m[1]===d[1]))mirrors.push(d);
+ return {name,target,mirrors};
+}
 const EVENT_LEVELS=[
- {name:'Schneeflocken-Start',target:2,mirrors:[[1,1,1],[2,3,0]]},
- {name:'Rentierspur',target:1,mirrors:[[1,0,0],[2,2,1],[3,3,0]]},
- {name:'Zuckerstangen',target:3,mirrors:[[1,1,0],[2,2,1],[3,1,0]]},
- {name:'Sternenlicht',target:1,mirrors:[[1,0,1],[2,2,0],[3,3,1]]},
- {name:'Werkstatt am Nordpol',target:3,mirrors:[[1,1,1],[2,3,1],[3,2,0],[3,4,1]]},
- {name:'Eisiger Irrgarten',target:2,mirrors:[[1,0,0],[2,1,1],[2,3,0],[3,4,1]]},
- {name:'Lichterkette',target:1,mirrors:[[1,1,1],[2,2,0],[3,1,1],[3,3,0]]},
- {name:'Geschenkewerk',target:3,mirrors:[[1,0,0],[1,3,1],[2,2,1],[3,1,0],[3,4,1]]},
- {name:'Polarlicht',target:2,mirrors:[[1,1,0],[2,0,1],[2,3,1],[3,2,0],[3,4,0]]},
- {name:'Weihnachtsstern',target:1,mirrors:[[1,0,1],[1,3,0],[2,2,1],[3,1,1],[3,4,0]]},
- {name:'Schlittenroute',target:3,mirrors:[[1,1,0],[2,0,0],[2,2,1],[2,4,1],[3,3,0]]},
- {name:'Das letzte Geschenk',target:2,mirrors:[[1,0,1],[1,3,1],[2,1,0],[2,3,0],[3,2,1],[3,4,0]]}
+ makeChristmasPuzzle('Schneeflocken-Start',1,0),
+ makeChristmasPuzzle('Rentierspur',3,1),
+ makeChristmasPuzzle('Zuckerstangen',0,2),
+ makeChristmasPuzzle('Sternenlicht',4,3),
+ makeChristmasPuzzle('Werkstatt am Nordpol',2,0),
+ makeChristmasPuzzle('Eisiger Irrgarten',1,1),
+ makeChristmasPuzzle('Lichterkette',3,2),
+ makeChristmasPuzzle('Geschenkewerk',0,3),
+ makeChristmasPuzzle('Polarlicht',4,0),
+ makeChristmasPuzzle('Weihnachtsstern',2,1),
+ makeChristmasPuzzle('Schlittenroute',1,2),
+ makeChristmasPuzzle('Das letzte Geschenk',3,3)
 ];
 const KEY='prism-christmas-completed-v1';
 let levelIndex=0,mirrors=[],canvas=null,ctx=null,frame=0,completed=[];
