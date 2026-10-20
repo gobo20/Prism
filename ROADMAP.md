@@ -31,11 +31,14 @@ This roadmap separates urgent reliability fixes from feature work. Do not merge 
 
 ## Next test pass — UI and performance
 
-- [ ] Remove the competing injected home navigation and integrate the home navigation into one source of truth; the old event entry points are hidden pending a clean rebuild.
+- [ ] Remove the competing injected home navigation and integrate the home navigation into one source of truth; the home UI overlap still needs testing.
 - [ ] Re-test level-complete FPS after the lightweight-overlay patch; preserve the 60 FPS normal gameplay result.
 - [x] Remove the old autumn-event code, 12 event levels, separate event currency and event menu from the test branch.
 - [x] Make all 12 skins (including the three autumn-themed looks) purchasable with in-game Coins; Classic remains free.
-- [ ] Rebuild the autumn event from scratch using [AUTUMN_EVENT_REDESIGN.md](./AUTUMN_EVENT_REDESIGN.md) only as a design brief; do not reuse the removed event implementation.
+- [x] Replace the autumn event entry with a new Christmas-themed 12-level laser puzzle hub, using mirror rotation and laser-to-target rules inspired by the main game.
+- [x] Save Christmas level completion separately and award Coins once per newly completed event level.
+- [x] Add a premium storefront UI with euro-denominated offers and a separate Coin-pack tab.
+- [ ] Connect and verify a real payment provider / Google Play Billing, including server-side purchase validation. The current storefront intentionally does not simulate purchases.
 
 ## v1.8.0 — Save data and game progression
 
