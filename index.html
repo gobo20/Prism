@@ -306,7 +306,7 @@ function openSkins(){
 }
 window.goboOpenSkins=openSkins;
 document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-tool-skins],[data-home-skins],[data-event-skins]');if(t){e.preventDefault();e.stopPropagation();openSkins()}},true);
-document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-tool-event],[data-home-event]');if(t){e.preventDefault();e.stopPropagation();toast('Das Herbst-Event wird komplett neu aufgebaut.');}},true);
+document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-tool-event],[data-home-event]');if(t){e.preventDefault();e.stopPropagation();if(typeof window.goboOpenEvent==='function')window.goboOpenEvent();}},true);
 })();
 </script>
 
@@ -424,7 +424,7 @@ document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-t
 #gobo-home-nav .home-nav-shop{background:linear-gradient(135deg,#5b4bea,#7c3aed);color:#fff;box-shadow:0 10px 24px rgba(99,80,220,.22)}
 #gobo-home-nav .home-nav-skins{background:linear-gradient(135deg,#147fe8,#2563eb);color:#fff;box-shadow:0 10px 24px rgba(37,99,235,.22)}
 #gobo-home-nav .home-nav-daily{background:rgba(255,255,255,.09);color:#fff}
-#gobo-home-nav .home-nav-event{background:linear-gradient(135deg,#d65a0b,#f97316);color:#fff;box-shadow:0 10px 24px rgba(249,115,22,.22)}
+#gobo-home-nav .home-nav-event{background:linear-gradient(135deg,#087f5b,#165dba);color:#fff;box-shadow:0 10px 24px rgba(16,185,129,.22)}
 #gobo-home-nav .home-nav-icon{font-size:17px;line-height:1}
 #gobo-home-nav .home-nav-label{font-size:9px;letter-spacing:.04em}
 #gobo-home-nav .home-nav-event em{position:absolute;right:7px;top:5px;font-style:normal;font-size:6px;padding:3px 4px;border-radius:999px;background:#fed7aa;color:#7c2d12;letter-spacing:.04em}
@@ -452,7 +452,7 @@ document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-t
         <button class="home-nav-shop" data-home-shop><span class="home-nav-icon">💳</span><span class="home-nav-label">SHOP</span></button>
         <button class="home-nav-skins" data-home-skins><span class="home-nav-icon">✨</span><span class="home-nav-label">SKINS</span></button>
         <button class="home-nav-daily" data-home-daily><span class="home-nav-icon">✦</span><span class="home-nav-label">DAILY</span></button>
-        <button class="home-nav-event" data-home-event><em>LIMITIERT</em><span class="home-nav-icon">🍂</span><span class="home-nav-label">HERBST</span></button>`;
+        <button class="home-nav-event" data-home-event><em>WINTER</em><span class="home-nav-icon">🎄</span><span class="home-nav-label">WEIHNACHTEN</span></button>`;
       nav.style.position="relative"; nav.style.zIndex="5";
       nav.style.marginTop="18px";
       const target=oldGrid||holder.lastElementChild;
@@ -505,6 +505,125 @@ document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-t
       .then(function (registration) { return registration.update(); })
       .catch(function (error) { console.warn('Prism PWA update check failed:', error); });
   }, { once: true });
+})();
+</script>
+
+
+<style id="prism-christmas-and-cash-shop">
+#gobo-cash-store,#gobo-christmas-event{position:fixed;inset:0;z-index:100900;color:#f8fafc;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.gcs-backdrop,.gce-backdrop{position:absolute;inset:0;background:rgba(2,6,23,.88)}
+.gcs-panel,.gce-panel{position:relative;margin:auto;width:min(960px,96vw);max-height:94dvh;overflow:auto;border:1px solid #ffffff20;border-radius:26px;background:linear-gradient(145deg,#0b1226,#15152e);box-shadow:0 30px 100px #0009}
+.gcs-panel{top:3dvh;padding:20px}.gcs-head,.gce-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.gcs-head h2,.gce-head h1{margin:3px 0;font-size:25px;font-weight:950}.gcs-kicker{font-size:9px;letter-spacing:.18em;font-weight:900;color:#a5b4fc}.gcs-close,.gce-close{width:42px;height:42px;border-radius:50%;border:1px solid #ffffff22;background:#ffffff0d;color:white;font-size:25px}
+.gcs-tabs{display:flex;gap:8px;margin:18px 0}.gcs-tabs button{flex:1;padding:12px;border-radius:12px;border:1px solid #ffffff20;background:#ffffff08;color:#fff;font-weight:900}.gcs-tabs button.active{background:linear-gradient(100deg,#6366f1,#8b5cf6);border-color:transparent}
+.gcs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.gcs-item{padding:17px;border:1px solid #ffffff18;border-radius:19px;background:linear-gradient(155deg,#ffffff0d,#ffffff04);display:flex;flex-direction:column;gap:10px}.gcs-item .emoji{font-size:32px}.gcs-item h3{margin:0;font-size:15px}.gcs-item p{margin:0;color:#cbd5e1a8;font-size:11px;line-height:1.5;flex:1}.gcs-price{font-size:23px;font-weight:950}.gcs-buy{padding:12px;border:0;border-radius:12px;background:linear-gradient(100deg,#34d399,#22c55e);color:#052e24;font-weight:950}.gcs-buy:disabled{background:#ffffff15;color:#ffffff9c}.gcs-note{margin-top:15px;padding:12px;border:1px solid #fbbf2440;background:#fbbf240d;border-radius:13px;color:#fde68a;font-size:11px;line-height:1.5}
+.gce-panel{top:2dvh;height:96dvh;padding:20px;background:radial-gradient(ellipse at 50% 0%,#123e54 0%,#0b1730 43%,#10142c 100%);border-color:#67e8f955}.gce-head h1{font-size:clamp(22px,4vw,34px)}.gce-sub{color:#bae6fd;font-size:12px}.gce-hero{margin:16px 0;padding:17px;border:1px solid #67e8f933;border-radius:20px;background:linear-gradient(120deg,#0f766e55,#1d4ed855);position:relative;overflow:hidden}.gce-hero:after{content:'❄  ✦  ❄';position:absolute;right:14px;top:12px;color:#bfdbfe88;font-size:20px;letter-spacing:12px}.gce-hero h2{margin:0 0 5px;font-size:23px}.gce-hero p{margin:0;color:#dbeafea8;font-size:12px;max-width:650px}.gce-progress{margin-top:12px;height:6px;border-radius:9px;background:#ffffff15;overflow:hidden}.gce-progress span{display:block;height:100%;background:linear-gradient(90deg,#34d399,#67e8f9);width:0}
+.gce-levels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.gce-level{padding:13px;border:1px solid #ffffff17;border-radius:16px;background:#ffffff08;color:#fff;text-align:left;min-height:106px;display:flex;flex-direction:column;justify-content:space-between}.gce-level:hover{border-color:#67e8f9aa;background:#67e8f90d}.gce-level.done{border-color:#34d39966}.gce-level .num{font-size:9px;color:#67e8f9;font-weight:900;letter-spacing:.1em}.gce-level b{font-size:13px}.gce-level small{color:#cbd5e1a8;font-size:10px}.gce-game{display:none;margin-top:14px}.gce-game.active{display:block}.gce-gamebar{display:flex;align-items:center;gap:10px;margin-bottom:10px}.gce-back{padding:9px 13px;border-radius:99px;border:1px solid #ffffff22;background:#ffffff0b;color:white;font-weight:800}.gce-gamebar strong{font-size:14px}.gce-gamebar span{margin-left:auto;color:#bae6fd;font-size:11px}.gce-board{display:block;width:min(100%,620px);aspect-ratio:1;margin:0 auto;border:1px solid #67e8f944;border-radius:18px;background:#071326;touch-action:manipulation}.gce-actions{display:flex;justify-content:center;gap:9px;margin-top:10px}.gce-actions button{padding:12px 18px;border:0;border-radius:99px;font-weight:950}.gce-check{background:linear-gradient(90deg,#34d399,#67e8f9);color:#052e2b}.gce-reset{background:#ffffff14;color:white;border:1px solid #ffffff22!important}.gce-message{text-align:center;min-height:24px;margin:10px;color:#a7f3d0;font-weight:800;font-size:12px}.gce-reward{display:none;text-align:center;padding:13px;margin-top:10px;border:1px solid #fbbf2455;background:#fbbf2410;border-radius:15px;color:#fde68a}.gce-reward.show{display:block}
+@media(max-width:650px){.gcs-panel{top:1dvh;padding:15px;max-height:98dvh}.gcs-grid{grid-template-columns:1fr}.gcs-item{display:grid;grid-template-columns:42px 1fr;gap:6px 10px}.gcs-item .emoji{grid-row:span 3}.gcs-item p{grid-column:2}.gcs-price,.gcs-buy{grid-column:2}.gce-panel{top:0;height:100dvh;max-height:100dvh;border-radius:0;padding:12px}.gce-levels{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.gce-level{min-height:88px;padding:10px}.gce-hero{padding:13px}.gce-hero h2{font-size:19px}}
+</style>
+<script id="prism-cash-store-and-christmas-event">
+(function(){
+'use strict';
+function closeStore(){document.getElementById('gobo-cash-store')?.remove()}
+function openCashStore(){
+ closeStore();
+ const root=document.createElement('div');root.id='gobo-cash-store';
+ root.innerHTML='<div class="gcs-backdrop"></div><section class="gcs-panel"><header class="gcs-head"><div><div class="gcs-kicker">GOBOGAMES • PREMIUM STORE</div><h2>💎 Prism Shop</h2><p style="margin:4px 0 0;color:#cbd5e1a8;font-size:12px">Coins und Skins bleiben im normalen Spielshop. Hier findest du optionale Premium-Pakete.</p></div><button class="gcs-close" aria-label="Schließen">×</button></header><div class="gcs-tabs"><button class="active" data-tab="money">Echtgeld</button><button data-tab="coins">Coin-Pakete</button></div><div class="gcs-grid" data-products></div><div class="gcs-note">⚠️ Der Checkout ist noch nicht verbunden. Es wird nichts berechnet und kein Kauf vorgetäuscht. Für echte Zahlungen muss vor Veröffentlichung ein sicherer Zahlungsanbieter bzw. Google Play Billing mit serverseitiger Kaufprüfung eingerichtet werden.</div></section>';
+ document.body.appendChild(root);
+ root.querySelector('.gcs-backdrop').onclick=closeStore;root.querySelector('.gcs-close').onclick=closeStore;
+ const products={
+  money:[['🎁','Starter-Paket','Ein kleines Premium-Paket für den Einstieg','1,99 €'],['💠','Prism Plus','Mehr Premium-Inhalte für deine Sammlung','4,99 €'],['👑','Ultimate Bundle','Das große optionale Premium-Bundle','9,99 €']],
+  coins:[['🪙','Coin-Beutel','Zusätzliche Spiel-Coins','0,99 €'],['💰','Coin-Truhe','Ein größeres Coin-Paket','2,99 €'],['🏆','Coin-Tresor','Das größte Coin-Paket','5,99 €']]
+ };
+ function render(tab){root.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));root.querySelector('[data-products]').innerHTML=products[tab].map(p=>'<article class="gcs-item"><div class="emoji">'+p[0]+'</div><h3>'+p[1]+'</h3><p>'+p[2]+'</p><div class="gcs-price">'+p[3]+'</div><button class="gcs-buy" disabled title="Zahlungsanbieter noch nicht verbunden">Checkout noch nicht verfügbar</button></article>').join('')}
+ root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>render(b.dataset.tab));render('money');
+}
+window.goboOpenCashShop=openCashStore;
+
+const EVENT_LEVELS=[
+ {name:'Schneeflocken-Start',target:2,mirrors:[[1,1,1],[2,3,0]]},
+ {name:'Rentierspur',target:1,mirrors:[[1,0,0],[2,2,1],[3,3,0]]},
+ {name:'Zuckerstangen',target:3,mirrors:[[1,1,0],[2,2,1],[3,1,0]]},
+ {name:'Sternenlicht',target:1,mirrors:[[1,0,1],[2,2,0],[3,3,1]]},
+ {name:'Werkstatt am Nordpol',target:3,mirrors:[[1,1,1],[2,3,1],[3,2,0],[3,4,1]]},
+ {name:'Eisiger Irrgarten',target:2,mirrors:[[1,0,0],[2,1,1],[2,3,0],[3,4,1]]},
+ {name:'Lichterkette',target:1,mirrors:[[1,1,1],[2,2,0],[3,1,1],[3,3,0]]},
+ {name:'Geschenkewerk',target:3,mirrors:[[1,0,0],[1,3,1],[2,2,1],[3,1,0],[3,4,1]]},
+ {name:'Polarlicht',target:2,mirrors:[[1,1,0],[2,0,1],[2,3,1],[3,2,0],[3,4,0]]},
+ {name:'Weihnachtsstern',target:1,mirrors:[[1,0,1],[1,3,0],[2,2,1],[3,1,1],[3,4,0]]},
+ {name:'Schlittenroute',target:3,mirrors:[[1,1,0],[2,0,0],[2,2,1],[2,4,1],[3,3,0]]},
+ {name:'Das letzte Geschenk',target:2,mirrors:[[1,0,1],[1,3,1],[2,1,0],[2,3,0],[3,2,1],[3,4,0]]}
+];
+const KEY='prism-christmas-completed-v1';
+let levelIndex=0,mirrors=[],canvas=null,ctx=null,frame=0,completed=[];
+function readDone(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}}
+function saveDone(){localStorage.setItem(KEY,JSON.stringify(completed))}
+function eventRoot(){return document.getElementById('gobo-christmas-event')}
+function openEvent(){
+ if(eventRoot())return;
+ completed=readDone();
+ const root=document.createElement('div');root.id='gobo-christmas-event';
+ root.innerHTML='<div class="gce-backdrop"></div><section class="gce-panel"><header class="gce-head"><div><div class="gcs-kicker">GOBOGAMES PRISM • WINTER EVENT</div><h1>🎄 Das Weihnachtslicht</h1><div class="gce-sub">12 winterliche Laser-Rätsel • löse sie mit derselben Spiegel-und-Laser-Idee wie im Hauptspiel</div></div><button class="gce-close" aria-label="Schließen">×</button></header><div class="gce-hero"><h2>Rette das Licht am Nordpol</h2><p>Die Weihnachtslichter sind ausgegangen! Drehe die Spiegel, leite den Laser zum Stern und bringe die Geschenke zum Leuchten. Dein normaler Hauptspiel-Fortschritt bleibt unangetastet.</p><div class="gce-progress"><span data-progress></span></div><div style="margin-top:7px;font-size:10px;color:#bae6fd" data-progress-label></div></div><div data-hub><div class="gce-levels" data-levels></div></div><div class="gce-game" data-game><div class="gce-gamebar"><button class="gce-back">← Level</button><strong data-level-title></strong><span data-moves>0 Züge</span></div><canvas class="gce-board" width="600" height="600"></canvas><div class="gce-message" data-message>Tippe auf Spiegel, um sie zu drehen.</div><div class="gce-actions"><button class="gce-reset">↻ Zurücksetzen</button><button class="gce-check">Laser testen ✨</button></div><div class="gce-reward" data-reward></div></div></section>';
+ document.body.appendChild(root);
+ root.querySelector('.gce-backdrop').onclick=()=>root.remove();root.querySelector('.gce-close').onclick=()=>root.remove();
+ root.querySelector('.gce-back').onclick=showHub;root.querySelector('.gce-reset').onclick=()=>loadLevel(levelIndex);
+ root.querySelector('.gce-check').onclick=checkSolution;
+ canvas=root.querySelector('canvas');ctx=canvas.getContext('2d');
+ renderHub();
+}
+function renderHub(){
+ const root=eventRoot();if(!root)return;
+ root.querySelector('[data-hub]').style.display='block';root.querySelector('[data-game]').classList.remove('active');
+ root.querySelector('[data-levels]').innerHTML=EVENT_LEVELS.map((l,i)=>'<button class="gce-level '+(completed.includes(i)?'done':'')+'" data-level="'+i+'"><span class="num">WEIHNACHTSLEVEL '+String(i+1).padStart(2,'0')+'</span><b>'+(completed.includes(i)?'✓ ':'')+l.name+'</b><small>'+(completed.includes(i)?'Geschafft • Geschenk gesichert':'🧩 Laser-Rätsel')+'</small></button>').join('');
+ root.querySelectorAll('[data-level]').forEach(b=>b.onclick=()=>loadLevel(Number(b.dataset.level)));
+ root.querySelector('[data-progress]').style.width=(completed.length/EVENT_LEVELS.length*100)+'%';
+ root.querySelector('[data-progress-label]').textContent=completed.length+' / '+EVENT_LEVELS.length+' Level abgeschlossen';
+}
+function showHub(){const root=eventRoot();if(!root)return;root.querySelector('[data-hub]').style.display='block';root.querySelector('[data-game]').classList.remove('active');cancelAnimationFrame(frame);renderHub()}
+function loadLevel(i){
+ levelIndex=i;mirrors=EVENT_LEVELS[i].mirrors.map(m=>({x:m[0],y:m[1],slash:m[2]}));
+ const root=eventRoot();root.querySelector('[data-hub]').style.display='none';root.querySelector('[data-game]').classList.add('active');root.querySelector('[data-level-title]').textContent='Level '+(i+1)+' · '+EVENT_LEVELS[i].name;root.querySelector('[data-message]').textContent='Tippe auf Spiegel, um sie zu drehen.';root.querySelector('[data-reward]').classList.remove('show');root.querySelector('[data-moves]').textContent='0 Züge';drawBoard();
+}
+function drawBoard(){
+ if(!canvas||!ctx||!eventRoot())return;
+ const w=canvas.width,h=canvas.height,cell=w/5;ctx.clearRect(0,0,w,h);
+ const bg=ctx.createLinearGradient(0,0,w,h);bg.addColorStop(0,'#071a2b');bg.addColorStop(1,'#101d3a');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+ ctx.strokeStyle='#bfe8ff16';ctx.lineWidth=1;for(let i=0;i<=5;i++){ctx.beginPath();ctx.moveTo(i*cell,0);ctx.lineTo(i*cell,h);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i*cell);ctx.lineTo(w,i*cell);ctx.stroke()}
+ // emitter on left, star target on right at the target row.
+ const target=EVENT_LEVELS[levelIndex].target;
+ ctx.fillStyle='#34d399';ctx.shadowColor='#34d399';ctx.shadowBlur=20;ctx.beginPath();ctx.arc(10,cell*2.5,13,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+ ctx.fillStyle='#fbbf24';ctx.font='bold 34px system-ui';ctx.textAlign='center';ctx.fillText('★',w-28,(target+.5)*cell+12);
+ // Draw current laser trace.
+ const trace=traceBeam();ctx.strokeStyle='#67e8f9';ctx.lineWidth=5;ctx.shadowColor='#67e8f9';ctx.shadowBlur=15;ctx.beginPath();ctx.moveTo(0,cell*2.5);trace.forEach(p=>ctx.lineTo((p.x+.5)*cell,(p.y+.5)*cell));ctx.stroke();ctx.shadowBlur=0;
+ mirrors.forEach(m=>{const x=(m.x+.5)*cell,y=(m.y+.5)*cell;ctx.fillStyle='#e0f2fe';ctx.shadowColor='#93c5fd';ctx.shadowBlur=12;ctx.beginPath();ctx.arc(x,y,cell*.23,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#0e7490';ctx.lineWidth=10;ctx.lineCap='round';ctx.beginPath();if(m.slash===0){ctx.moveTo(x-cell*.19,y+cell*.19);ctx.lineTo(x+cell*.19,y-cell*.19)}else{ctx.moveTo(x-cell*.19,y-cell*.19);ctx.lineTo(x+cell*.19,y+cell*.19)}ctx.stroke()});
+ ctx.fillStyle='#dbeafe';ctx.font='bold 14px system-ui';ctx.textAlign='left';ctx.fillText('LASER',14,26);ctx.fillStyle='#fef3c7';ctx.textAlign='right';ctx.fillText('STERN',w-14,26);
+}
+function traceBeam(){
+ const target=EVENT_LEVELS[levelIndex].target,byPos=new Map(mirrors.map(m=>[m.x+','+m.y,m])),path=[];
+ let x=0,y=2,dx=1,dy=0,seen=new Set();
+ for(let n=0;n<80;n++){
+  x+=dx;y+=dy;if(x<0||x>=5||y<0||y>=5)break;
+  const key=x+','+y+','+dx+','+dy;if(seen.has(key))break;seen.add(key);path.push({x,y});
+  const m=byPos.get(x+','+y);if(m){const old=dx;dx=m.slash===0?-dy:dy;dy=m.slash===0?-old:old;}
+  if(x===4&&y===target)break;
+ }
+ return path;
+}
+function checkSolution(){
+ const root=eventRoot();if(!root)return;
+ const path=traceBeam(),hit=path.some(p=>p.x===4&&p.y===EVENT_LEVELS[levelIndex].target);
+ if(!hit){root.querySelector('[data-message]').textContent='Noch nicht! Drehe die Spiegel anders und teste erneut.';drawBoard();return}
+ if(!completed.includes(levelIndex)){completed.push(levelIndex);saveDone()}
+ root.querySelector('[data-message]').textContent='✨ Perfekt! Das Weihnachtslicht leuchtet!';
+ root.querySelector('[data-reward]').textContent='🎁 Levelbelohnung: '+(25+(levelIndex+1)*5)+' Coins (Belohnung wird nach Verbindung mit dem Hauptspiel-Speicher aktiviert).';
+ root.querySelector('[data-reward]').classList.add('show');drawBoard();renderHub();
+ // Keep the current puzzle visible; the hub updates only when the player taps back.
+}
+if(canvas)canvas.addEventListener('pointerdown',function(ev){
+ const r=canvas.getBoundingClientRect(),x=(ev.clientX-r.left)/r.width*5,y=(ev.clientY-r.top)/r.height*5;
+ const m=mirrors.find(q=>Math.abs(q.x+.5-x)<.48&&Math.abs(q.y+.5-y)<.48);
+ if(m){m.slash=1-m.slash;const root=eventRoot();root.querySelector('[data-moves]').textContent=(Number(root.querySelector('[data-moves]').dataset.n||0)+1)+' Züge';root.querySelector('[data-moves]').dataset.n=String(Number(root.querySelector('[data-moves]').dataset.n||0)+1);drawBoard()}
+});
+window.goboOpenEvent=openEvent;
 })();
 </script>
 
