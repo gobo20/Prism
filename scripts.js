@@ -93,9 +93,6 @@ window.GoboGemSkins=[
 {id:"galaxy",name:"Galaxy",gemPrice:350,laserColor:"#BF5AF2",mirrorColor:"#E9D5FF",glowColor:"#BF5AF2",description:"Kosmischer Laser"},
 {id:"void",name:"Void",gemPrice:400,laserColor:"#FFFFFF",mirrorColor:"#1A1A2E",glowColor:"#FFFFFF",description:"Schwarzer Spiegel mit weißem Rand"},
 {id:"rainbow",name:"Rainbow",gemPrice:500,laserColor:"#FF00FF",mirrorColor:"#FFFFFF",glowColor:"#FF00AA",description:"Prismatischer Regenbogen-Look",isRainbow:true},
-{id:"autumn-maple",name:"Ahorn-Flamme",event:true,laserColor:"#F97316",mirrorColor:"#FED7AA",glowColor:"#FB923C",description:"Herbst-Event • glühender Ahorn-Laser"},
-{id:"autumn-golden",name:"Goldener Herbst",event:true,laserColor:"#F59E0B",mirrorColor:"#FEF3C7",glowColor:"#FBBF24",description:"Herbst-Event • goldener Laser"},
-{id:"autumn-night",name:"Herbstnacht",event:true,laserColor:"#A855F7",mirrorColor:"#DDD6FE",glowColor:"#C084FC",description:"Herbst-Event • violetter Nacht-Laser"}
 ]
 
 ;
@@ -205,17 +202,6 @@ Error generating stack: `+u.message+`
 ;
 
 (function(){
-  const EVENT_KEY='gobogames-autumn-event-v1';
-  const EVENT_END=new Date('2026-11-30T23:59:59+01:00');
-  const EVENT_SKINS=[
-    {id:'autumn-maple',name:'Ahorn-Flamme',price:80,laser:'#F97316',glow:'#FB923C',desc:'Glühender Ahorn-Laser'},
-    {id:'autumn-golden',name:'Goldener Herbst',price:140,laser:'#F59E0B',glow:'#FBBF24',desc:'Goldener Herbst-Laser'},
-    {id:'autumn-night',name:'Herbstnacht',price:220,laser:'#A855F7',glow:'#C084FC',desc:'Violetter Nacht-Laser'}
-  ];
-  const LEVELS=Array.from({length:12},(_,i)=>({id:i+1,reward:20+(i*5),difficulty:i<4?'LEICHT':i<8?'MITTEL':'SCHWER'}));
-  function state(){try{return JSON.parse(localStorage.getItem(EVENT_KEY))||null}catch{return null}}
-  function save(v){localStorage.setItem(EVENT_KEY,JSON.stringify(v))}
-  function getState(){let v=state();if(!v){v={leaves:0,done:[],skin:'',started:Date.now()};save(v)}return v}
   function esc(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
   function toast(t){let el=document.getElementById('gobo-toast');if(!el){el=document.createElement('div');el.id='gobo-toast';document.body.appendChild(el)}el.textContent=t;el.classList.add('show');clearTimeout(window.__goboToast);window.__goboToast=setTimeout(()=>el.classList.remove('show'),2400)}
   function modal(title,html,accent){
@@ -233,152 +219,19 @@ Error generating stack: `+u.message+`
     document.querySelectorAll('.gx-buy').forEach(b=>b.onclick=()=>toast('💳 Echtgeld-Shop: Zahlungsanbieter noch nicht verbunden.'));
   }
   function skins(){
-    const st=getState();
-    const all=(window.GoboGemSkins||[]).filter(x=>!x.event).map(x=>({...x,type:'gem'})).concat(EVENT_SKINS.map(x=>({...x,type:'event',gemPrice:0,description:x.desc,laserColor:x.laser,glowColor:x.glow,mirrorColor:'#FED7AA'})));
+    const gems=getGems(), all=(window.GoboGemSkins||[]).filter(x=>!x.event);
     const cards=all.map(x=>{
       const equipped=localStorage.getItem('prism-skin')===x.id;
-      const owned=x.type==='event' ? (st.done.includes('skin:'+x.id)||st.skin===x.id) : equipped;
-      const price=x.type==='event'?x.price:x.gemPrice;
-      const can=x.type==='event'?st.leaves>=x.price:getGems()>=x.gemPrice;
-      let action='';
-      if(equipped) action='<button class="gx-eq active" disabled>AUSGERÜSTET</button>';
-      else if(x.type==='event') action=owned?`<button class="gx-eq" data-equip="${x.id}">AUSRÜSTEN</button>`:`<button class="gx-eq" data-event-buy="${x.id}" ${can?'':'disabled'}>${can?'FREISCHALTEN':'NOCH '+(x.price-st.leaves)+' 🍂'}</button>`;
-      else action=`<button class="gx-eq" data-gem-skin="${x.id}" ${owned?'':' '}>${owned?'AUSRÜSTEN':'💎 '+price}</button>`;
-      return `<div class="gx-skin ${x.type==='event'?'event-skin':''}" style="--laser:${x.laserColor};--glow:${x.glowColor}"><div class="gx-skin-preview"><i></i><span>✦</span></div><div class="gx-skin-head"><b>${esc(x.name)}</b><em>${x.type==='event'?'HERBST':'PREMIUM'}</em></div><small>${esc(x.description||x.desc||'')}</small><div class="gx-skin-row"><strong>${x.type==='event'?'🍂 '+x.price:'💎 '+x.gemPrice}</strong>${action}</div></div>`;
+      let owned=[];try{owned=JSON.parse(localStorage.getItem('prism-owned')||'[]')}catch{}if(!Array.isArray(owned))owned=[];
+      const isOwned=owned.includes(x.id)||!x.gemPrice;
+      const action=equipped?'<button class="gx-eq active" disabled>AUSGERÜSTET</button>':isOwned?`<button class="gx-eq" data-equip="${x.id}">AUSRÜSTEN</button>`:`<button class="gx-eq" data-gem-skin="${x.id}">💎 ${x.gemPrice}</button>`;
+      return `<div class="gx-skin" style="--laser:${x.laserColor};--glow:${x.glowColor}"><div class="gx-skin-preview"></div><b>${esc(x.name)}</b><p>${esc(x.description||'')}</p>${action}</div>`;
     }).join('');
-    const m=modal('✨ Skins',`<div class="gx-wallet gx-dual-wallet"><span>💎 Gems <b>${getGems()}</b></span><span>🍂 Herbst-Blätter <b>${st.leaves}</b></span></div><p class="gx-sub">Deine bisherigen Premium-Skins bleiben erhalten. Herbst-Skins sind nur im limitierten Event erhältlich.</p><div class="gx-skin-grid">${cards}</div>`,'#2563EB');
-    m.querySelectorAll('[data-gem-skin]').forEach(b=>b.onclick=()=>{const x=(window.GoboGemSkins||[]).find(q=>q.id===b.dataset.gemSkin);if(!x)return;if(getGems()<x.gemPrice){toast('Nicht genug Gems');return}localStorage.setItem('prism-skin',x.id);toast('✨ '+x.name+' ausgerüstet');m.remove();skins();});
-    m.querySelectorAll('[data-event-buy]').forEach(b=>b.onclick=()=>{const x=EVENT_SKINS.find(q=>q.id===b.dataset.eventBuy);const st2=getState();if(!x||st2.leaves<x.price)return;st2.leaves-=x.price;st2.done.push('skin:'+x.id);st2.skin=x.id;save(st2);localStorage.setItem('prism-skin',x.id);toast('🍂 '+x.name+' ausgerüstet!');m.remove();skins();});
-    m.querySelectorAll('[data-equip]').forEach(b=>b.onclick=()=>{const st2=getState();st2.skin=b.dataset.equip;save(st2);localStorage.setItem('prism-skin',st2.skin);toast('✨ Event-Skin ausgerüstet');m.remove();skins();});
+    const m=modal('✨ Skins',`<div class="gx-event-meta"><div><span>GEMS</span><b>💎 ${gems}</b></div></div><div class="gx-skin-grid">${cards}</div>`,'#2563eb');
+    m.querySelectorAll('[data-equip]').forEach(b=>b.onclick=()=>{equipSkin(b.dataset.equip);m.remove();toast('✨ Skin ausgerüstet')});
+    m.querySelectorAll('[data-gem-skin]').forEach(b=>b.onclick=()=>{const x=all.find(q=>q.id===b.dataset.gemSkin);if(!x)return;const balance=getGems();if(balance<x.gemPrice){toast('Nicht genug Gems');return}setGems(balance-x.gemPrice);equipSkin(x.id);m.remove();toast('✨ '+x.name+' gekauft und ausgerüstet')});
   }
-  const EVENT_LEVELS=[
-    {id:1,reward:20,difficulty:1,name:'Autumn Light',mirrors:[[46,50,45]],target:[82,50]},
-    {id:2,reward:25,difficulty:1,name:'Falling Leaves',mirrors:[[42,35,135],[62,65,45]],target:[82,65]},
-    {id:3,reward:30,difficulty:1,name:'Maple Turn',mirrors:[[35,50,45],[62,30,135]],target:[82,30]},
-    {id:4,reward:35,difficulty:2,name:'Harvest Path',mirrors:[[30,30,45],[30,70,45],[62,70,135]],target:[82,30]},
-    {id:5,reward:40,difficulty:2,name:'Golden Trail',mirrors:[[32,65,135],[52,35,45],[72,65,135]],target:[88,65]},
-    {id:6,reward:45,difficulty:2,name:'Leaf Maze',mirrors:[[28,35,45],[48,65,45],[68,35,135]],target:[88,35]},
-    {id:7,reward:50,difficulty:2,name:'Autumn Cross',mirrors:[[30,50,135],[50,25,45],[70,50,135]],target:[88,25]},
-    {id:8,reward:55,difficulty:3,name:'Pumpkin Route',mirrors:[[25,25,45],[45,50,135],[65,75,45],[80,45,135]],target:[92,45]},
-    {id:9,reward:60,difficulty:3,name:'Red Forest',mirrors:[[25,70,135],[45,40,45],[65,70,135],[80,30,45]],target:[92,30]},
-    {id:10,reward:65,difficulty:3,name:'Golden Maze',mirrors:[[22,30,45],[42,70,45],[62,30,135],[78,70,135]],target:[94,70]},
-    {id:11,reward:70,difficulty:3,name:'Night Harvest',mirrors:[[22,65,135],[40,35,45],[58,65,45],[76,35,135]],target:[94,35]},
-    {id:12,reward:75,difficulty:3,name:'Last Leaf',mirrors:[[20,30,45],[38,65,135],[56,30,45],[74,65,135],[86,40,45]],target:[96,40]}
-  ];
-  function event(){
-    if(Date.now()>EVENT_END.getTime()){toast('🍂 Das Herbst-Event ist beendet.');return;}
-    const st=getState(),doneCount=st.done.filter(x=>typeof x==='number').length;
-    const levels=EVENT_LEVELS.map(x=>{const done=st.done.includes(x.id),open=x.id===1||st.done.includes(x.id-1);return `<button class="gx-level ${done?'done':''}" data-level="${x.id}" ${(!open||done)?'disabled':''}><span>${done?'✓':'LEVEL '+x.id}</span><small>${x.difficulty===1?'LEICHT':x.difficulty===2?'MITTEL':'SCHWER'}</small><b>+${x.reward} 🍂</b></button>`}).join('');
-    const m=modal('🍂 Herbst-Event • LIMITIERT',`<div class="gx-event-hero"><div class="gx-leaves">🍁 🍂 🍁</div><div><b>Spiele wie die normalen Level!</b><p>Dieselben Laser-/Spiegel-Regeln, nur mit neuen Herbst-Leveln. Das Event läuft bis 30.11.2026.</p></div></div><div class="gx-event-meta"><div><span>WÄHRUNG</span><b>🍂 ${st.leaves}</b></div><div><span>FORTSCHRITT</span><b>${doneCount}/12</b></div><div><span>SKINS</span><b>${EVENT_SKINS.length}</b></div></div><div class="gx-section-title">EVENT-LEVEL</div><div class="gx-level-grid">${levels}</div><div class="gx-section-title">BELOHNUNGEN</div><div class="gx-reward-row"><span>🍂 Level abschließen</span><b>20–75 Blätter</b></div><div class="gx-reward-row"><span>✨ Event-Skins</span><b>80–220 Blätter</b></div><button class="gx-main" data-event-skins>✨ ALLE SKINS</button>`, '#F97316');
-    m.querySelectorAll('[data-level]').forEach(b=>b.onclick=()=>eventLevel(parseInt(b.dataset.level)));
-    m.querySelector('[data-event-skins]').onclick=skins;
-  }
-  function eventLevel(id){
-    const lvl=EVENT_LEVELS.find(x=>x.id===id); if(!lvl)return;
-    const W=800,H=800;
-    // Herbst uses the same visual/gameplay language as the normal levels.
-    const layouts=[
-      {name:'Maple Spark',difficulty:1,reward:20,emitter:{x:120,y:400,angle:0},mirrors:[{x:360,y:400,angle:45,length:150}],target:{x:650,y:180,r:34}},
-      {name:'Falling Leaves',difficulty:1,reward:25,emitter:{x:120,y:400,angle:0},mirrors:[{x:360,y:400,angle:45,length:150},{x:600,y:220,angle:135,length:150}],target:{x:600,y:520,r:34}},
-      {name:'Harvest Turn',difficulty:1,reward:30,emitter:{x:120,y:600,angle:0},mirrors:[{x:360,y:600,angle:135,length:150},{x:360,y:300,angle:45,length:150}],target:{x:650,y:300,r:34}},
-      {name:'Pumpkin Corner',difficulty:2,reward:35,emitter:{x:120,y:600,angle:0},mirrors:[{x:350,y:600,angle:135,length:150},{x:350,y:300,angle:45,length:150},{x:600,y:300,angle:135,length:150}],target:{x:680,y:600,r:34}},
-      {name:'Golden Alley',difficulty:2,reward:40,emitter:{x:120,y:600,angle:0},mirrors:[{x:330,y:600,angle:135,length:140},{x:330,y:320,angle:45,length:140},{x:600,y:320,angle:135,length:140}],target:{x:680,y:600,r:36}},
-      {name:'Autumn Break',difficulty:2,reward:45,emitter:{x:680,y:680,angle:180},mirrors:[{x:450,y:680,angle:45,length:140},{x:450,y:400,angle:135,length:140},{x:180,y:400,angle:45,length:140}],target:{x:180,y:120,r:36}},
-      {name:'Forest Prism',difficulty:2,reward:50,emitter:{x:120,y:680,angle:0},mirrors:[{x:330,y:680,angle:45,length:130},{x:330,y:420,angle:135,length:130},{x:600,y:420,angle:45,length:130}],target:{x:680,y:120,r:36}},
-      {name:'Leaf Labyrinth',difficulty:2,reward:55,emitter:{x:680,y:680,angle:180},mirrors:[{x:500,y:680,angle:135,length:130},{x:500,y:420,angle:45,length:130},{x:250,y:420,angle:135,length:130},{x:250,y:160,angle:45,length:130}],target:{x:680,y:160,r:36}},
-      {name:'Crystal Caves',difficulty:2,reward:60,emitter:{x:120,y:120,angle:0},mirrors:[{x:340,y:120,angle:135,length:125},{x:340,y:380,angle:45,length:125},{x:600,y:380,angle:135,length:125}],target:{x:680,y:680,r:36}},
-      {name:'Amber Chroma',difficulty:2,reward:65,emitter:{x:120,y:400,angle:0},mirrors:[{x:320,y:400,angle:45,length:130},{x:320,y:180,angle:135,length:130},{x:600,y:180,angle:45,length:130}],target:{x:680,y:520,r:36}},
-      {name:'Harvest Cross',difficulty:3,reward:70,emitter:{x:120,y:680,angle:0},mirrors:[{x:300,y:680,angle:45,length:130},{x:300,y:450,angle:135,length:130},{x:520,y:450,angle:45,length:130},{x:520,y:220,angle:135,length:130}],target:{x:700,y:220,r:38}},
-      {name:'Last Leaf',difficulty:3,reward:75,emitter:{x:680,y:680,angle:180},mirrors:[{x:500,y:680,angle:135,length:125},{x:500,y:430,angle:45,length:125},{x:260,y:430,angle:135,length:125},{x:260,y:180,angle:45,length:125}],target:{x:680,y:180,r:38}}
-    ];
-    const base=layouts[id-1]||layouts[0], puzzle=JSON.parse(JSON.stringify(base));
-    let angles=puzzle.mirrors.map(q=>q.angle), moves=0, selected=-1, drag=null, solved=false, snapAnim=null, trail=[];
-    const st0=getState();
-    const skin=(window.GoboGemSkins||[]).find(x=>x.id===localStorage.getItem('prism-skin'))||window.GoboGemSkins?.[0]||{};
-    const laserColor=skin.event?skin.laserColor:'#F97316';
-    const glowColor=skin.event?skin.glowColor:'#FB923C';
-    const mirrorColor=skin.event?skin.mirrorColor:'#FED7AA';
-    const m=modal('🍂 Herbst • Level '+id+` • ${puzzle.name}`,`
-      <div class="gx-main-game">
-        <div class="gx-game-top">
-          <div><div class="gx-kicker">GOBOGAMES • HERBST-EVENT • LIMITIERT</div><h2>🍁 ${puzzle.name}</h2></div>
-          <div class="gx-game-actions"><span class="gx-moves">MOVES <b id="event-moves">0</b> / ${puzzle.mirrors.length}</span><button class="gx-reset" id="event-reset">↻ RESET</button><button class="gx-close">×</button></div>
-        </div>
-        <div class="gx-game-layout">
-          <div class="gx-game-board gx-main-board"><canvas id="event-canvas" width="800" height="800"></canvas></div>
-          <aside class="gx-game-side">
-            <div class="gx-side-card"><span>EVENT</span><b>🍂 ${st0.leaves} Blätter</b></div>
-            <div class="gx-side-card"><span>SKIN</span><b>${esc(skin.name||'Classic')}</b></div>
-            <div class="gx-side-card"><span>ANLEITUNG</span><p>Spiegel ziehen und frei drehen. Beim Loslassen rastet er wie im Hauptspiel auf 45° ein.</p></div>
-            <div class="gx-mirror-list" id="event-mirror-list"></div>
-          </aside>
-        </div>
-      </div>`, '#F97316');
-    const canvas=m.querySelector('#event-canvas'),ctx=canvas.getContext('2d');
-    const movesEl=m.querySelector('#event-moves'),list=m.querySelector('#event-mirror-list');
-    function norm(v){const l=Math.hypot(v.x,v.y)||1;return{x:v.x/l,y:v.y/l}}
-    function cross(a,b){return a.x*b.y-a.y*b.x}
-    function hitSeg(o,d,A,B){const v={x:B.x-A.x,y:B.y-A.y},den=cross(d,v);if(Math.abs(den)<1e-8)return null;const q={x:A.x-o.x,y:A.y-o.y},t=cross(q,v)/den,u=cross(q,d)/den;if(t>0.0001&&u>=0&&u<=1)return{t,point:{x:o.x+d.x*t,y:o.y+d.y*t}};return null}
-    function hitCircle(o,d,c,r,maxT){const l={x:o.x-c.x,y:o.y-c.y},b=2*(l.x*d.x+l.y*d.y),cc=l.x*l.x+l.y*l.y-r*r,disc=b*b-4*cc;if(disc<0)return null;const root=Math.sqrt(disc),t1=(-b-root)/2,t2=(-b+root)/2,t=t1>0.001?t1:t2;return t>0.001&&t<=maxT+0.001?t:null}
-    function trace(){
-      let o={...puzzle.emitter},d=norm({x:Math.cos(puzzle.emitter.angle*Math.PI/180),y:Math.sin(puzzle.emitter.angle*Math.PI/180)}),segments=[],points=[{...o}],hit=false;
-      for(let step=0;step<12;step++){
-        let best=null,bi=-1;
-        puzzle.mirrors.forEach((q,i)=>{const a=angles[i]*Math.PI/180,dx=Math.cos(a)*q.length/2,dy=Math.sin(a)*q.length/2,h=hitSeg(o,d,{x:q.x-dx,y:q.y-dy},{x:q.x+dx,y:q.y+dy});if(h&&(!best||h.t<best.t)){best=h;bi=i}});
-        const tt=hitCircle(o,d,puzzle.target,puzzle.target.r+8,best?best.t:2000);
-        if(tt!==null){const p={x:o.x+d.x*tt,y:o.y+d.y*tt};segments.push({a:o,b:p});points.push(p);hit=true;break}
-        if(!best){const p={x:o.x+d.x*2000,y:o.y+d.y*2000};segments.push({a:o,b:p});points.push(p);break}
-        segments.push({a:o,b:best.point});points.push(best.point);
-        const a=angles[bi]*Math.PI/180,n=norm({x:-Math.sin(a),y:Math.cos(a)}),dd=d.x*n.x+d.y*n.y;d={x:d.x-2*dd*n.x,y:d.y-2*dd*n.y};o={x:best.point.x+d.x*0.9,y:best.point.y+d.y*0.9};
-      }
-      return {segments,points,hit};
-    }
-    function resize(){const r=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.max(1,r.width*dpr);canvas.height=Math.max(1,r.height*dpr);ctx.setTransform(dpr*r.width/W,0,0,dpr*r.height/H,0,0)}
-    function pos(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
-    function pick(p){let idx=-1,dist=110;for(let i=0;i<puzzle.mirrors.length;i++){const q=puzzle.mirrors[i],dd=Math.hypot(p.x-q.x,p.y-q.y);if(dd<dist){dist=dd;idx=i}}return idx}
-    function drawPrism(q,i,active){const a=angles[i]*Math.PI/180,A=q.length/2;ctx.save();ctx.translate(q.x,q.y);ctx.rotate(a);ctx.shadowColor=glowColor;ctx.shadowBlur=active?24:14;if(active){ctx.fillStyle=hexAlpha(glowColor,.25);ctx.beginPath();ctx.moveTo(-A-6,0);ctx.lineTo(0,-16);ctx.lineTo(A+6,0);ctx.lineTo(0,16);ctx.closePath();ctx.fill();ctx.shadowBlur=0}const g=ctx.createLinearGradient(-A,-12,A,12);g.addColorStop(0,mirrorColor);g.addColorStop(.5,'#FFFFFF');g.addColorStop(1,mirrorColor);ctx.fillStyle=g;ctx.strokeStyle=hexAlpha(glowColor,.9);ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-A,0);ctx.lineTo(0,-10);ctx.lineTo(A,0);ctx.lineTo(0,10);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#0F172A';ctx.beginPath();ctx.arc(0,0,3.4,0,Math.PI*2);ctx.fill();ctx.fillStyle='white';ctx.beginPath();ctx.arc(0,0,1.7,0,Math.PI*2);ctx.fill();ctx.restore()}
-    function hexAlpha(hex,a){const h=(hex||'#F97316').replace('#','');const r=parseInt(h.slice(0,2),16)||249,g=parseInt(h.slice(2,4),16)||115,b=parseInt(h.slice(4,6),16)||22;return `rgba(${r},${g},${b},${a})`}
-    function drawLaser(tr,time){for(const seg of tr.segments){const ax=seg.a.x,ay=seg.a.y,bx=seg.b.x,by=seg.b.y;const dx=bx-ax,dy=by-ay,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len;ctx.save();ctx.strokeStyle=hexAlpha(laserColor,.18);ctx.lineWidth=24;ctx.lineCap='round';ctx.shadowColor=laserColor;ctx.shadowBlur=26;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();ctx.strokeStyle=hexAlpha(laserColor,.78);ctx.lineWidth=9;ctx.shadowBlur=16;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=3;ctx.shadowBlur=0;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();ctx.strokeStyle=laserColor;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();const phase=(time*.0006)%1, count=Math.floor(len/60);for(let j=0;j<count;j++){const f=(phase+j)/count%1,x=ax+ux*len*f,y=ay+uy*len*f;ctx.fillStyle='white';ctx.shadowColor=laserColor;ctx.shadowBlur=8;ctx.beginPath();ctx.arc(x,y,2.2,0,Math.PI*2);ctx.fill()}ctx.restore()}}
-    function drawAngleGuide(q){if(selected<0||!drag)return;const I=drag.last,b=((I%360)+360)%360,snap=Math.round(I/45)*45,diff=Math.abs(((I-snap+540)%360)-180),radius=68;ctx.save();ctx.translate(q.x,q.y);ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1.2;ctx.setLineDash([4,8]);ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);for(let n=0;n<8;n++){const a=n*45*Math.PI/180,on=Math.abs(((snap-n*45+540)%360)-180)<.2,x1=Math.cos(a)*(radius-10),y1=Math.sin(a)*(radius-10),x2=Math.cos(a)*(radius+8),y2=Math.sin(a)*(radius+8);ctx.strokeStyle=on&&diff<15?glowColor:'rgba(255,255,255,.3)';ctx.lineWidth=on&&diff<15?3:1.4;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.fillStyle=on&&diff<15?glowColor:'rgba(255,255,255,.42)';ctx.font='800 9px Outfit';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(`${n*45}°`,Math.cos(a)*(radius+22),Math.sin(a)*(radius+22))}ctx.restore();const text=`${Math.round(((I%360)+360)%360)}°${diff<15?' ✦ SNAP':''}`;ctx.save();ctx.translate(q.x,q.y-radius-28);ctx.font='900 12px Outfit';const mw=ctx.measureText(text).width;ctx.fillStyle=diff<15?glowColor:'#FFFFFF';if(ctx.roundRect)ctx.roundRect(-mw/2-10,-12,mw+20,24,12);else ctx.rect(-mw/2-10,-12,mw+20,24);ctx.fill();ctx.fillStyle=diff<15?'#000':'#0B1220';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,0,0);ctx.restore()}
-    function draw(){
-      const r=canvas.getBoundingClientRect(); if(!r.width)return; resize(); const now=performance.now();
-      if(snapAnim){const t=Math.min(1,(now-snapAnim.start)/300),x= t===1?1:1+(3.126975)*Math.pow(t-1,3)+2.126975*Math.pow(t-1,2);angles[snapAnim.idx]=snapAnim.from+(snapAnim.to-snapAnim.from)*x;if(t===1)snapAnim=null;}
-      const tr=trace();
-      ctx.clearRect(0,0,W,H);ctx.fillStyle='#080C1A';ctx.fillRect(0,0,W,H);ctx.fillStyle='rgba(255,255,255,.04)';for(let x=0;x<W;x+=22)for(let y=0;y<H;y+=22){ctx.beginPath();ctx.arc(x,y,.9,0,Math.PI*2);ctx.fill()}
-      // subtle autumn atmosphere without changing the main level layout language
-      const vg=ctx.createRadialGradient(620,170,20,620,170,300);vg.addColorStop(0,hexAlpha('#F97316',.12));vg.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
-      drawLaser(tr,now);
-      // emitter, matching the normal game's emitter visual
-      ctx.save();ctx.translate(puzzle.emitter.x,puzzle.emitter.y);ctx.fillStyle=hexAlpha(glowColor,.18);ctx.beginPath();ctx.arc(0,0,26,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0B1220';ctx.strokeStyle='white';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,16,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle=laserColor;ctx.shadowColor=glowColor;ctx.shadowBlur=12;ctx.beginPath();ctx.arc(0,0,7,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.rotate(puzzle.emitter.angle*Math.PI/180);ctx.fillStyle='#0B1220';ctx.strokeStyle=laserColor;ctx.beginPath();ctx.roundRect(6,-3,18,6,3);ctx.fill();ctx.stroke();ctx.restore();
-      // autumn target, in the same target container style as the normal game
-      ctx.save();ctx.translate(puzzle.target.x,puzzle.target.y);const pulse=10+Math.sin(now*.004)*3;for(let j=0;j<3;j++){ctx.strokeStyle=`rgba(250,150,40,${.30-j*.07})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,puzzle.target.r+14+j*10+pulse*.1,0,Math.PI*2);ctx.stroke()}ctx.fillStyle='rgba(249,115,22,.22)';ctx.shadowColor='#F97316';ctx.shadowBlur=28;ctx.beginPath();ctx.arc(0,0,puzzle.target.r*1.7,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.font='44px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🍁',0,2);ctx.restore();
-      puzzle.mirrors.forEach((q,i)=>drawPrism(q,i,i===selected));
-      if(selected>=0&&drag)drawAngleGuide(puzzle.mirrors[selected]);
-      if(tr.hit&&!solved&&!snapAnim){solved=true;setTimeout(()=>complete(),250)}
-      if(!solved)requestAnimationFrame(draw);
-      renderList();
-    }
-    function renderList(){list.innerHTML=puzzle.mirrors.map((q,i)=>`<div class="gx-mirror-item ${selected===i?'active':''}"><span>${i+1}</span><b>PRISM ${i+1}</b><em>${Math.round(((angles[i]%360)+360)%360)}°</em></div>`).join('')}
-    canvas.addEventListener('pointerdown',e=>{if(solved)return;const p=pos(e),i=pick(p);if(i<0)return;e.preventDefault();selected=i;const q=puzzle.mirrors[i],a=Math.atan2(p.y-q.y,p.x-q.x),start=angles[i];drag={idx:i,startAngle:a,startMirror:start,last:start};try{canvas.setPointerCapture(e.pointerId)}catch{}draw()});
-    canvas.addEventListener('pointermove',e=>{if(!drag||solved)return;const p=pos(e),q=puzzle.mirrors[drag.idx],delta=Math.atan2(p.y-q.y,p.x-q.x)-drag.startAngle;let deg=drag.startMirror+delta*180/Math.PI;if(deg>drag.startMirror+180)deg-=360;if(deg<drag.startMirror-180)deg+=360;drag.last=deg;angles[drag.idx]=deg;draw()});
-    function release(e){if(!drag)return;const i=drag.idx,from=drag.last,to=Math.round(from/45)*45;drag=null;snapAnim={idx:i,from,to,start:performance.now()};moves++;movesEl.textContent=moves;try{canvas.releasePointerCapture(e.pointerId)}catch{}draw()}
-    canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
-    m.querySelector('#event-reset').onclick=()=>{snapAnim=null;angles=puzzle.mirrors.map(q=>q.angle);moves=0;solved=false;selected=-1;drag=null;movesEl.textContent='0';draw()};
-    function complete(){
-      const s=getState(),first=!s.done.includes(id);
-      if(first){s.done.push(id);s.leaves+=puzzle.reward;save(s)}
-      const host=m.querySelector('.gx-main-game')||m;
-      host.style.position='relative';
-      const overlay=document.createElement('div');
-      overlay.className='gx-event-finish';
-      overlay.style.cssText='position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(3,7,18,.84);backdrop-filter:blur(12px);border-radius:inherit;';
-      overlay.innerHTML='<div style="width:min(100%,380px);padding:28px 22px;text-align:center;border:1px solid rgba(251,146,60,.4);border-radius:26px;background:linear-gradient(145deg,#172033,#0b1020);box-shadow:0 20px 80px rgba(0,0,0,.5);color:white"><div style="font-size:52px">🍂✨</div><div style="font-size:10px;font-weight:900;letter-spacing:.24em;color:#FDBA74;margin-top:8px">HERBST-EVENT</div><h2 style="font-size:28px;font-weight:1000;margin:8px 0">LEVEL GESCHAFFT!</h2><p style="color:#cbd5e1;font-size:14px">'+puzzle.name+' erfolgreich abgeschlossen.</p><div style="margin:18px auto;padding:10px 14px;border-radius:14px;background:rgba(249,115,22,.15);color:#FDBA74;font-weight:900">+'+(first?puzzle.reward:0)+' 🍂 HERBST-BLÄTTER</div><button data-event-next style="width:100%;padding:13px;border-radius:999px;background:linear-gradient(90deg,#fb923c,#fbbf24);color:#111827;font-weight:1000;margin-top:4px">'+(id<EVENT_LEVELS.length?'NÄCHSTES LEVEL →':'EVENT ABSCHLIESSEN ✓')+'</button><button data-event-menu style="width:100%;padding:11px;border-radius:999px;background:rgba(255,255,255,.08);color:#fff;font-weight:800;margin-top:9px">ZUR LEVELAUSWAHL</button></div>';
-      host.appendChild(overlay);
-      overlay.querySelector('[data-event-next]').onclick=()=>{m.remove();if(id<EVENT_LEVELS.length)eventLevel(id+1);};
-      overlay.querySelector('[data-event-menu]').onclick=()=>m.remove();
-    }
-    window.addEventListener('resize',resize); resize(); draw();
-  }
+  function equipSkin(id){let owned=[];try{owned=JSON.parse(localStorage.getItem('prism-owned')||'[]')}catch{}if(!Array.isArray(owned))owned=[];if(!owned.includes(id))owned.push(id);localStorage.setItem('prism-owned',JSON.stringify(owned));localStorage.setItem('prism-skin',id)}
   function loadingVisible(){
     const root=document.getElementById('root');
     if(!root)return true;
@@ -409,13 +262,13 @@ Error generating stack: `+u.message+`
       return;
     }
     let b=bar;
-    if(!b){b=document.createElement('div');b.id='gobo-tools';b.innerHTML=`<button class="gx-tool shop" data-tool-shop><span>💳</span><b>SHOP</b></button><button class="gx-tool skins" data-tool-skins><span>✨</span><b>SKINS</b></button><button class="gx-tool event" data-tool-event><span>🍂</span><b>HERBST</b><em>LIMITIERT</em></button>`;document.body.appendChild(b);}
+    if(!b){b=document.createElement('div');b.id='gobo-tools';b.innerHTML=`<button class="gx-tool shop" data-tool-shop><span>💳</span><b>SHOP</b></button><button class="gx-tool skins" data-tool-skins><span>✨</span><b>SKINS</b></button>`;document.body.appendChild(b);}
     b.classList.add('gobo-visible');
-    b.querySelector('[data-tool-shop]').onclick=cashShop;b.querySelector('[data-tool-skins]').onclick=skins;b.querySelector('[data-tool-event]').onclick=event;
+    b.querySelector('[data-tool-shop]').onclick=cashShop;b.querySelector('[data-tool-skins]').onclick=skins;
     document.getElementById('gobo-launcher')?.remove();document.getElementById('gobo-coins-mini')?.remove();
     ensureGemsPill();updateGemsPill();
   }
-  window.goboOpenCashShop=cashShop; window.goboOpenSkins=skins; window.goboOpenEvent=event;
+  window.goboOpenCashShop=cashShop; window.goboOpenSkins=skins;
   // V8: do NOT observe the whole React tree. The old observer caused a mutation loop:
   // addUI() changed the DOM -> observer fired -> addUI() changed the DOM again -> freeze.
 })();
