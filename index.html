@@ -324,7 +324,21 @@ function playEvent(id){
  function angleAt(p,m){return norm(Math.atan2(p.y-m.y,p.x-m.x)*180/Math.PI)}
  function nearest(p){let best=-1,bd=85;mirrors.forEach((m,i)=>{const d=Math.hypot(p.x-m.x,p.y-m.y);if(d<bd){bd=d;best=i}});return best}
  function snap(i){const target=Math.round(mirrors[i].a/45)*45;snapFrom=mirrors[i].a;snapTo=target;snapStart=performance.now();snapping=true;function step(t){const q=Math.min(1,(t-snapStart)/260),e=1-Math.pow(1-q,3);mirrors[i].a=snapFrom+(snapTo-snapFrom)*e;draw(t);if(q<1)requestAnimationFrame(step);else{mirrors[i].a=norm(target);snapping=false;moves++;moveEl.textContent=moves;check()}}requestAnimationFrame(step)}
- function check(){if(won||moves<1)return false;const tr=trace();if(!tr.hit)return false;won=true;toast('🍂 Ziel getroffen! +'+lvl.reward+' Herbst-Blätter');setTimeout(()=>{const st=getState();if(!st.done.includes(id)){st.done.push(id);st.leaves+=lvl.reward;saveState(st)}setTimeout(()=>{if(root.isConnected){root.remove();document.documentElement.style.removeProperty('overflow');document.body.style.removeProperty('overflow');eventMenu()}},450)},500);return true}
+ function check(tr=trace()){
+  if(won||moves<1||!tr.hit)return false;
+  won=true;
+  const st=getState();
+  if(!st.done.includes(id)){st.done.push(id);st.leaves+=lvl.reward;saveState(st)}
+  const finish=document.createElement('div');
+  finish.className='gxv-finish-screen';
+  finish.style.cssText='position:absolute;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,7,18,.86);backdrop-filter:blur(14px);color:#fff;font-family:system-ui,sans-serif;';
+  finish.innerHTML='<section style="width:min(100%,420px);padding:30px 24px;border:1px solid rgba(251,146,60,.45);border-radius:28px;text-align:center;background:linear-gradient(145deg,#172033,#0b1020);box-shadow:0 24px 90px #0009"><div style="font-size:54px">🍂✨</div><div style="margin-top:8px;color:#fdba74;font-size:10px;font-weight:900;letter-spacing:.2em">HERBST-EVENT</div><h2 style="font-size:29px;font-weight:1000;margin:9px 0">LEVEL GESCHAFFT!</h2><p style="font-size:14px;color:#cbd5e1;margin:0">'+lvl.name+' – Ziel getroffen!</p><div style="margin:18px 0;padding:12px;border-radius:14px;background:#f9731626;color:#fdba74;font-weight:900">+'+lvl.reward+' 🍂 HERBST-BLÄTTER</div><button data-finish-next style="width:100%;padding:14px;border-radius:999px;background:linear-gradient(90deg,#fb923c,#fbbf24);color:#111827;font-weight:1000">'+(id<LEVELS.length?'NÄCHSTES LEVEL →':'EVENT ABSCHLIESSEN ✓')+'</button><button data-finish-menu style="width:100%;padding:12px;border-radius:999px;background:#ffffff12;color:#fff;font-weight:800;margin-top:9px">ZUR LEVELAUSWAHL</button></section>';
+  root.appendChild(finish);
+  const leave=()=>{root.remove();document.documentElement.style.removeProperty('overflow');document.body.style.removeProperty('overflow')};
+  finish.querySelector('[data-finish-next]').onclick=()=>{leave();if(id<LEVELS.length)playEvent(id+1);else eventMenu()};
+  finish.querySelector('[data-finish-menu]').onclick=()=>{leave();eventMenu()};
+  return true;
+}
  canvas.addEventListener('pointerdown',e=>{if(snapping||won)return;const p=pointer(e),i=nearest(p);if(i<0)return;selected=i;dragging=true;canvas.setPointerCapture(e.pointerId);dragStart=angleAt(p,mirrors[i]);lastAngle=mirrors[i].a});
  canvas.addEventListener('pointermove',e=>{if(!dragging||selected<0||snapping)return;const p=pointer(e),a=angleAt(p,mirrors[selected]);let delta=a-dragStart;if(delta>180)delta-=360;if(delta<-180)delta+=360;mirrors[selected].a=norm(lastAngle+delta);draw(performance.now());check()});
  canvas.addEventListener('pointerup',e=>{if(!dragging||selected<0)return;dragging=false;snap(selected);selected=-1});
