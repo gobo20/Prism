@@ -151,6 +151,9 @@ window.GoboGemSkins=[
 {id:"galaxy",name:"Galaxy",gemPrice:350,laserColor:"#BF5AF2",mirrorColor:"#E9D5FF",glowColor:"#BF5AF2",description:"Kosmischer Laser"},
 {id:"void",name:"Void",gemPrice:400,laserColor:"#FFFFFF",mirrorColor:"#1A1A2E",glowColor:"#FFFFFF",description:"Schwarzer Spiegel mit weißem Rand"},
 {id:"rainbow",name:"Rainbow",gemPrice:500,laserColor:"#FF00FF",mirrorColor:"#FFFFFF",glowColor:"#FF00AA",description:"Prismatischer Regenbogen-Look",isRainbow:true},
+{id:"christmas-candy",name:"Candy Cane",event:true,laserColor:"#FB7185",mirrorColor:"#FFE4E6",glowColor:"#F43F5E",description:"Weihnachts-Event • Zuckerstangen-Laser"},
+{id:"christmas-star",name:"Weihnachtsstern",event:true,laserColor:"#FDE047",mirrorColor:"#FEF9C3",glowColor:"#FACC15",description:"Weihnachts-Event • goldener Sternen-Laser"},
+{id:"christmas-aurora",name:"Polarlicht",event:true,laserColor:"#67E8F9",mirrorColor:"#CFFAFE",glowColor:"#22D3EE",description:"Weihnachts-Event • Polarlicht-Laser"},
 
 
 
@@ -284,6 +287,92 @@ Error generating stack: `+u.message+`
 })();
 </script>
 
+<script data-gobogames-event="v20">
+(function(){
+'use strict';
+const EVENT_KEY='gobogames-christmas-event-v1';
+const EVENT_END=new Date('2027-01-06T23:59:59+01:00');
+const EVENT_SKINS=[
+{id:'christmas-candy',name:'Candy Cane',price:80,laser:'#FB7185',glow:'#F43F5E',mirror:'#FFE4E6',desc:'Zuckerstangen-roter Laser'},
+{id:'christmas-star',name:'Weihnachtsstern',price:140,laser:'#FDE047',glow:'#FACC15',mirror:'#FEF9C3',desc:'Goldener Sternen-Laser'},
+{id:'christmas-aurora',name:'Polarlicht',price:220,laser:'#67E8F9',glow:'#22D3EE',mirror:'#CFFAFE',desc:'Magischer Polarlicht-Laser'}
+];
+const LEVELS=[
+{id:1,name:'Snowflake Spark',par:1,reward:20,e:{x:110,y:300,a:0},m:[{x:380,y:300,a:90,l:150}],t:{x:380,y:120,r:30}},
+{id:2,name:'Candy Cane Curve',par:2,reward:25,e:{x:110,y:300,a:0},m:[{x:350,y:300,a:135,l:150},{x:350,y:130,a:135,l:150}],t:{x:650,y:130,r:30}},
+{id:3,name:'Frozen Turn',par:2,reward:30,e:{x:110,y:500,a:0},m:[{x:350,y:500,a:135,l:150},{x:350,y:250,a:135,l:150}],t:{x:650,y:250,r:30}},
+{id:4,name:'Reindeer Route',par:3,reward:35,e:{x:110,y:520,a:0},m:[{x:300,y:520,a:135,l:130},{x:300,y:220,a:135,l:130},{x:600,y:220,a:45,l:130}],t:{x:600,y:500,r:30}},
+{id:5,name:'Golden Star',par:3,reward:40,e:{x:110,y:150,a:0},m:[{x:300,y:150,a:135,l:120},{x:300,y:420,a:135,l:120},{x:600,y:420,a:45,l:120}],t:{x:600,y:150,r:30}},
+{id:6,name:'Aurora Path',par:3,reward:45,e:{x:110,y:500,a:0},m:[{x:300,y:500,a:135,l:120},{x:300,y:180,a:135,l:120},{x:600,y:180,a:45,l:120}],t:{x:600,y:500,r:30}},
+{id:7,name:'Candy Forest',par:4,reward:50,e:{x:100,y:520,a:0},m:[{x:260,y:520,a:135,l:110},{x:260,y:260,a:135,l:110},{x:520,y:260,a:45,l:110},{x:520,y:520,a:135,l:110}],t:{x:720,y:520,r:28}},
+{id:8,name:'Snowflake Labyrinth',par:4,reward:55,e:{x:100,y:120,a:0},m:[{x:260,y:120,a:135,l:110},{x:260,y:400,a:135,l:110},{x:520,y:400,a:45,l:110},{x:520,y:120,a:135,l:110}],t:{x:720,y:120,r:28}},
+{id:9,name:'Northern Glow',par:4,reward:60,e:{x:100,y:500,a:0},m:[{x:250,y:500,a:135,l:100},{x:250,y:220,a:135,l:100},{x:500,y:220,a:45,l:100},{x:500,y:500,a:135,l:100}],t:{x:720,y:500,r:28}},
+{id:10,name:'Christmas Chroma',par:4,reward:65,e:{x:100,y:160,a:0},m:[{x:250,y:160,a:135,l:100},{x:250,y:430,a:135,l:100},{x:500,y:430,a:45,l:100},{x:500,y:160,a:135,l:100}],t:{x:720,y:160,r:28}},
+{id:11,name:'Winter Maze',par:5,reward:70,e:{x:90,y:500,a:0},m:[{x:220,y:500,a:135,l:95},{x:220,y:220,a:135,l:95},{x:430,y:220,a:45,l:95},{x:430,y:500,a:135,l:95},{x:650,y:500,a:45,l:95}],t:{x:650,y:250,r:28}},
+{id:12,name:'Christmas Eve',par:5,reward:75,e:{x:90,y:120,a:0},m:[{x:220,y:120,a:135,l:95},{x:220,y:380,a:135,l:95},{x:430,y:380,a:45,l:95},{x:430,y:120,a:135,l:95},{x:650,y:120,a:45,l:95}],t:{x:650,y:360,r:28}}
+];
+function getState(){try{const x=JSON.parse(localStorage.getItem(EVENT_KEY));if(x)return x}catch{}const x={leaves:0,done:[],skin:''};localStorage.setItem(EVENT_KEY,JSON.stringify(x));return x}
+function saveState(x){localStorage.setItem(EVENT_KEY,JSON.stringify(x))}
+function toast(t){let e=document.getElementById('gobo-toast');if(!e){e=document.createElement('div');e.id='gobo-toast';document.body.appendChild(e)}e.textContent=t;e.classList.add('show');clearTimeout(window.__goboToast);window.__goboToast=setTimeout(()=>e.classList.remove('show'),2400)}
+function skinData(){const id=localStorage.getItem('prism-skin')||'classic';const all=window.GoboGemSkins||[];return all.find(x=>x.id===id)||all[0]||{id:'classic',name:'Classic',gemPrice:0,laserColor:'#00F5FF',mirrorColor:'#FFFFFF',glowColor:'#00F5FF'} }
+function equipMainSkin(id){let owned=[];try{owned=JSON.parse(localStorage.getItem('prism-owned')||'[]')}catch{};if(!Array.isArray(owned))owned=[];if(!owned.includes(id))owned.push(id);localStorage.setItem('prism-owned',JSON.stringify(owned));localStorage.setItem('prism-skin',id);}
+
+function openSkins(){
+ document.getElementById('gx-skins-screen')?.remove();
+ const st=getState(), gems=parseInt(localStorage.getItem('gobogames-gems')||'0')||0, all=(window.GoboGemSkins||[]).filter(x=>!x.event).map(x=>({...x,type:'gem'})).concat(EVENT_SKINS.map(x=>({id:x.id,name:x.name,gemPrice:0,laserColor:x.laser,glowColor:x.glow,mirrorColor:x.mirror,description:x.desc,type:'event',price:x.price})));
+ const root=document.createElement('div');root.id='gx-skins-screen';root.innerHTML=`<div class="gxv-backdrop"></div><section class="gxv-panel gxv-skins"><header><div><span>GOBOGAMES • COLLECTION</span><h1>✨ SKINS</h1><p>Dein Laser-Look verändert nur Farben und Licht – das Gameplay bleibt identisch.</p></div><button class="gxv-close">×</button></header><div class="gxv-wallet"><b>💎 ${gems} Gems</b><b>❄️ ${st.leaves} Schneeflocken</b></div><div class="gxv-grid">${all.map(x=>{const equipped=localStorage.getItem('prism-skin')===x.id;const owned=x.type==='event'?(st.done.includes('skin:'+x.id)||st.skin===x.id):x.gemPrice===0||equipped;const can=x.type==='event'?st.leaves>=x.price:gems>=x.gemPrice;let action=equipped?'<button disabled class="gxv-eq active">AUSGERÜSTET</button>':x.type==='event'?(owned?`<button class="gxv-eq" data-equip="${x.id}">AUSRÜSTEN</button>`:`<button class="gxv-eq" data-buy-event="${x.id}" ${can?'':'disabled'}>${can?'FREISCHALTEN':'NOCH '+(x.price-st.leaves)+' ❄️'}</button>`):owned?`<button class="gxv-eq" data-equip="${x.id}">AUSRÜSTEN</button>`:`<button class="gxv-eq" data-buy-gem="${x.id}" ${can?'':'disabled'}>${can?'KAUFEN':'NOCH '+(x.gemPrice-gems)+' 💎'}</button>`;return `<article class="gxv-skin" style="--c:${x.laserColor};--g:${x.glowColor}"><div class="gxv-preview"><div class="gxv-beam"></div><div class="gxv-prism"></div></div><div class="gxv-name"><b>${x.name}</b><span>${x.type==='event'?'❄️ WEIHNACHTEN':'💎 PREMIUM'}</span></div><p>${x.description||''}</p><div class="gxv-row"><strong>${x.type==='event'?'❄️ '+x.price:'💎 '+(x.gemPrice||0)}</strong>${action}</div></article>`}).join('')}</div></section>`;
+ document.body.appendChild(root);
+ root.querySelector('.gxv-close').onclick=()=>root.remove();root.querySelector('.gxv-backdrop').onclick=()=>root.remove();
+ root.querySelectorAll('[data-equip]').forEach(b=>b.onclick=()=>{const id=b.dataset.equip;equipMainSkin(id);st.skin=id;saveState(st);toast('✨ '+id+' ausgerüstet');setTimeout(()=>location.reload(),350)});
+ root.querySelectorAll('[data-buy-gem]').forEach(b=>b.onclick=()=>{const x=(window.GoboGemSkins||[]).find(q=>q.id===b.dataset.buyGem);if(!x)return;const g=parseInt(localStorage.getItem('gobogames-gems')||'0')||0;if(g<x.gemPrice){toast('Nicht genug Gems');return}localStorage.setItem('gobogames-gems',String(g-x.gemPrice));equipMainSkin(x.id);toast('✨ '+x.name+' gekauft und ausgerüstet');setTimeout(()=>location.reload(),350)});
+ root.querySelectorAll('[data-buy-event]').forEach(b=>b.onclick=()=>{const x=EVENT_SKINS.find(q=>q.id===b.dataset.buyEvent);const s=getState();if(!x||s.leaves<x.price)return;s.leaves-=x.price;s.done=[...new Set(s.done.concat('skin:'+x.id))];s.skin=x.id;saveState(s);equipMainSkin(x.id);toast('❄️ '+x.name+' freigeschaltet');setTimeout(()=>location.reload(),350)});
+}
+function eventMenu(){
+ if(Date.now()>EVENT_END){toast('❄️ Das Weihnachts-Event ist beendet.');return}
+ document.getElementById('gxv-event-menu')?.remove();const st=getState();const done=st.done.filter(x=>typeof x==='number').length;
+ const root=document.createElement('div');root.id='gxv-event-menu';root.innerHTML=`<div class="gxv-backdrop"></div><section class="gxv-panel gxv-eventmenu"><header><div><span>GOBOGAMES • LIMITED EVENT</span><h1>❄️ WEIHNACHTS-EVENT</h1><p>12 festliche Level • Schneeflocken sammeln • 3 exklusive Skins • bis 06.01.2027</p></div><button class="gxv-close">×</button></header><div class="gxv-eventstats"><div><small>SCHNEEFLOCKEN</small><b>❄️ ${st.leaves}</b></div><div><small>FORTSCHRITT</small><b>${done}/12</b></div><div><small>SKINS</small><b>3</b></div></div><div class="gxv-levels">${LEVELS.map(x=>{const open=x.id===1||st.done.includes(x.id-1),finished=st.done.includes(x.id);return `<button data-open-level="${x.id}" class="gxv-level ${finished?'done':''}" ${(!open||finished)?'disabled':''}><span>${finished?'✓':'LEVEL '+x.id}</span><b>${x.name}</b><small>${x.par} MOVES • +${x.reward} ❄️</small></button>`}).join('')}</div><button class="gxv-wide" data-open-skins>✨ EVENT-SKINS ÖFFNEN</button></section>`;
+ document.body.appendChild(root);root.querySelector('.gxv-close').onclick=()=>root.remove();root.querySelector('.gxv-backdrop').onclick=()=>root.remove();root.querySelector('[data-open-skins]').onclick=()=>{root.remove();openSkins()};root.querySelectorAll('[data-open-level]').forEach(b=>b.onclick=()=>{const id=+b.dataset.openLevel;root.remove();playEvent(id)});
+}
+function playEvent(id){
+ const lvl=LEVELS.find(x=>x.id===id);if(!lvl)return;document.getElementById('gxv-play')?.remove();let mirrors=lvl.m.map(x=>({...x}));const solution=lvl.m.map(x=>x.a);mirrors.forEach(x=>x.a=((x.a+45)%360));let moves=0,selected=-1,dragging=false,dragStart=0,lastAngle=0,snapFrom=0,snapTo=0,snapStart=0,snapping=false,won=false;
+ const skin=skinData(),root=document.createElement('div');root.id='gxv-play';root.innerHTML=`<div class="gxv-play-bg"></div><div class="gxv-playbar"><button class="gxv-back">‹</button><div><strong>❄️ WEIHNACHTS-EVENT</strong><span>LEVEL ${id}/12 • ${lvl.name}</span></div><div class="gxv-moves">MOVES <b>0</b> / ${lvl.par}</div><div class="gxv-leaves">❄️ ${getState().leaves}</div></div><main class="gxv-stage"><section class="gxv-board"><canvas width="800" height="620"></canvas><div class="gxv-hint">🪞 Spiegel ziehen • 45° SNAP beim Loslassen</div></section><aside><div class="gxv-side hero"><span>❄️ LIMITED EVENT</span><h2>${lvl.name}</h2><p>Richte den Laser auf den Weihnachtsstern.</p></div><div class="gxv-side"><small>PAR</small><b>${lvl.par} MOVES</b><small>BELOHNUNG</small><strong>+${lvl.reward} ❄️</strong></div><div class="gxv-side"><small>SKIN</small><div class="gxv-skin-current"><i style="--c:${skin.laserColor};--g:${skin.glowColor}"></i>${skin.name||'Classic'}</div></div><div class="gxv-side tip"><b>SO SPIELST DU</b><p>Genau wie im Hauptspiel: Spiegel auswählen, frei drehen und beim Loslassen auf 45° einrasten.</p></div></aside></main><footer><button class="gxv-footer-btn" data-reset>↻ RESET</button><span>LEVEL ${id}</span><button class="gxv-footer-btn" data-skins>✨ SKINS</button></footer></div>`;
+ document.body.appendChild(root);const canvas=root.querySelector('canvas'),ctx=canvas.getContext('2d'),moveEl=root.querySelector('.gxv-moves b');
+ const rad=a=>a*Math.PI/180,norm=a=>((a%360)+360)%360;
+ function segHit(o,d,A,B){const vx=B.x-A.x,vy=B.y-A.y,den=d.x*vy-d.y*vx;if(Math.abs(den)<1e-8)return null;const qx=A.x-o.x,qy=A.y-o.y,t=(qx*vy-qy*vx)/den,u=(qx*d.y-qy*d.x)/den;return t>0.01&&u>=0&&u<=1?t:null}
+ function circleHit(o,d,c,r,max){const qx=o.x-c.x,qy=o.y-c.y,b=2*(qx*d.x+qy*d.y),cc=qx*qx+qy*qy-r*r,disc=b*b-4*cc;if(disc<0)return null;const a=Math.sqrt(disc),t1=(-b-a)/2,t2=(-b+a)/2,vals=[t1,t2].filter(t=>t>0.01&&t<max);return vals.length?Math.min(...vals):null}
+ function pointSegDist2(p,a,b){const vx=b.x-a.x,vy=b.y-a.y,wx=p.x-a.x,wy=p.y-a.y,den=vx*vx+vy*vy,q=den?Math.max(0,Math.min(1,(wx*vx+wy*vy)/den)):0,dx=p.x-(a.x+q*vx),dy=p.y-(a.y+q*vy);return dx*dx+dy*dy}
+ function segmentTargetHit(a,b,c,r){return pointSegDist2(c,a,b)<=r*r}
+ function trace(){let o={x:lvl.e.x,y:lvl.e.y},d={x:Math.cos(rad(lvl.e.a)),y:Math.sin(rad(lvl.e.a))},segs=[],points=[{...o}],hit=false;for(let k=0;k<12;k++){let best=null;for(const m of mirrors){const a=rad(m.a),dx=Math.cos(a)*m.l/2,dy=Math.sin(a)*m.l/2,A={x:m.x-dx,y:m.y-dy},B={x:m.x+dx,y:m.y+dy},t=segHit(o,d,A,B);if(t!==null&&(!best||t<best.t))best={t,m,a}}const tt=circleHit(o,d,lvl.t,lvl.t.r,best?best.t:Infinity);if(tt!==null){const p={x:o.x+d.x*tt,y:o.y+d.y*tt};segs.push({a:{...o},b:p});points.push(p);hit=true;break}if(!best){const p={x:o.x+d.x*1600,y:o.y+d.y*1600};segs.push({a:{...o},b:p});points.push(p);if(segmentTargetHit(o,p,lvl.t,lvl.t.r))hit=true;break}const p={x:o.x+d.x*best.t,y:o.y+d.y*best.t};segs.push({a:{...o},b:p});points.push(p);if(segmentTargetHit(o,p,lvl.t,lvl.t.r)){hit=true;break}const a=rad(best.m.a),n={x:-Math.sin(a),y:Math.cos(a)},dot=d.x*n.x+d.y*n.y;d={x:d.x-2*dot*n.x,y:d.y-2*dot*n.y};const L=Math.hypot(d.x,d.y)||1;d.x/=L;d.y/=L;o={x:p.x+d.x*1.2,y:p.y+d.y*1.2}}return{segs,points,hit}}
+ function pointer(ev){const r=canvas.getBoundingClientRect();return{x:(ev.clientX-r.left)/r.width*800,y:(ev.clientY-r.top)/r.height*620}}
+ function angleAt(p,m){return norm(Math.atan2(p.y-m.y,p.x-m.x)*180/Math.PI)}
+ function nearest(p){let best=-1,bd=42;mirrors.forEach((m,i)=>{const d=Math.hypot(p.x-m.x,p.y-m.y);if(d<bd){bd=d;best=i}});return best}
+ function snap(i){const target=Math.round(mirrors[i].a/45)*45;snapFrom=mirrors[i].a;snapTo=target;snapStart=performance.now();snapping=true;function step(t){const q=Math.min(1,(t-snapStart)/260),e=1-Math.pow(1-q,3);mirrors[i].a=snapFrom+(snapTo-snapFrom)*e;draw(t);if(q<1)requestAnimationFrame(step);else{mirrors[i].a=norm(target);snapping=false;moves++;moveEl.textContent=moves;check()}}requestAnimationFrame(step)}
+ function check(){if(won||moves<1)return false;const tr=trace();if(!tr.hit)return false;won=true;toast('❄️ Ziel getroffen! +'+lvl.reward+' Schneeflocken');setTimeout(()=>{const st=getState();if(!st.done.includes(id)){st.done.push(id);st.leaves+=lvl.reward;saveState(st)}setTimeout(()=>{if(root.isConnected){root.remove();document.documentElement.style.removeProperty('overflow');document.body.style.removeProperty('overflow');eventMenu()}},450)},500);return true}
+ canvas.addEventListener('pointerdown',e=>{if(snapping||won)return;const p=pointer(e),i=nearest(p);if(i<0)return;selected=i;dragging=true;canvas.setPointerCapture(e.pointerId);dragStart=angleAt(p,mirrors[i]);lastAngle=mirrors[i].a});
+ canvas.addEventListener('pointermove',e=>{if(!dragging||selected<0||snapping)return;const p=pointer(e),a=angleAt(p,mirrors[selected]);let delta=a-dragStart;if(delta>180)delta-=360;if(delta<-180)delta+=360;mirrors[selected].a=norm(lastAngle+delta);draw(performance.now());check()});
+ canvas.addEventListener('pointerup',e=>{if(!dragging||selected<0)return;dragging=false;snap(selected);selected=-1});
+ const closePlay=()=>{root.remove();document.documentElement.style.removeProperty('overflow');document.body.style.removeProperty('overflow');eventMenu()};
+ root.style.setProperty('position','fixed','important');root.style.setProperty('inset','0','important');root.style.setProperty('width','100vw','important');root.style.setProperty('height','100vh','important');root.style.setProperty('z-index','2147483647','important');root.style.setProperty('background','#050810','important');root.style.setProperty('overflow','hidden','important');document.documentElement.style.setProperty('overflow','hidden','important');document.body.style.setProperty('overflow','hidden','important');
+ root.querySelector('.gxv-back').onclick=closePlay;root.querySelector('[data-reset]').onclick=()=>{mirrors=lvl.m.map(x=>({...x,a:norm(x.a+45)}));moves=0;moveEl.textContent='0';won=false;draw(performance.now())};root.querySelector('[data-skins]').onclick=openSkins;
+ function draw(t){ctx.clearRect(0,0,800,620);const bg=ctx.createLinearGradient(0,0,800,620);bg.addColorStop(0,'#071526');bg.addColorStop(1,'#0b1830');ctx.fillStyle=bg;ctx.fillRect(0,0,800,620);for(let x=0;x<800;x+=32){ctx.strokeStyle='rgba(255,255,255,.035)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,620);ctx.stroke()}for(let y=0;y<620;y+=32){ctx.strokeStyle='rgba(255,255,255,.035)';ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(800,y);ctx.stroke()}for(let i=0;i<28;i++){const x=(i*97+33)%800,y=(i*137+71)%620;ctx.fillStyle=i%2?'rgba(125,211,252,.18)':'rgba(167,243,208,.14)';ctx.save();ctx.translate(x,y);ctx.rotate(i*.7);ctx.beginPath();ctx.ellipse(0,0,4,8,0,0,Math.PI*2);ctx.fill();ctx.restore()}
+ const tr=trace(),color=skin.laserColor||'#00F5FF',glow=skin.glowColor||color;function beam(a,b){ctx.save();ctx.strokeStyle=glow;ctx.globalAlpha=.2;ctx.lineWidth=24;ctx.shadowColor=glow;ctx.shadowBlur=28;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.restore();ctx.save();ctx.strokeStyle=color;ctx.lineWidth=9;ctx.shadowColor=color;ctx.shadowBlur=16;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=3;ctx.shadowBlur=0;ctx.stroke();ctx.restore()}
+ tr.segs.forEach(s=>beam(s.a,s.b));
+ const em=lvl.e;ctx.save();ctx.translate(em.x,em.y);ctx.fillStyle='rgba(255,255,255,.08)';ctx.beginPath();ctx.arc(0,0,27,0,Math.PI*2);ctx.fill();ctx.fillStyle='#09111c';ctx.strokeStyle='#fff';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,16,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle=color;ctx.shadowColor=glow;ctx.shadowBlur=14;ctx.beginPath();ctx.arc(0,0,7,0,Math.PI*2);ctx.fill();ctx.restore();
+ const tar=lvl.t;ctx.save();ctx.translate(tar.x,tar.y);ctx.shadowColor='#7DD3FC';ctx.shadowBlur=24;ctx.fillStyle=tr.hit?'#E0F2FE':'#38BDF8';ctx.beginPath();ctx.arc(0,0,tar.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#1D4ED8';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-12);ctx.quadraticCurveTo(12,-8,12,0);ctx.quadraticCurveTo(12,8,0,12);ctx.quadraticCurveTo(-12,8,-12,0);ctx.quadraticCurveTo(-12,-8,0,-12);ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold 22px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⭐',0,0);ctx.restore();
+ mirrors.forEach((m,i)=>{const a=rad(m.a),L=m.l;ctx.save();ctx.translate(m.x,m.y);ctx.rotate(a);if(i===selected){ctx.shadowColor=glow;ctx.shadowBlur=25;ctx.fillStyle='rgba(255,255,255,.2)';ctx.beginPath();ctx.moveTo(-L/2-7,0);ctx.lineTo(0,-18);ctx.lineTo(L/2+7,0);ctx.lineTo(0,18);ctx.closePath();ctx.fill();ctx.shadowBlur=0}const gr=ctx.createLinearGradient(-L/2,-12,L/2,12);gr.addColorStop(0,skin.mirrorColor||'#FED7AA');gr.addColorStop(.5,'#fff');gr.addColorStop(1,skin.mirrorColor||'#FED7AA');ctx.fillStyle=gr;ctx.strokeStyle=glow;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-L/2,0);ctx.lineTo(0,-11);ctx.lineTo(L/2,0);ctx.lineTo(0,11);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#101826';ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,1.5,0,Math.PI*2);ctx.fill();ctx.restore();if(i===selected&&!snapping){ctx.save();ctx.translate(m.x,m.y);ctx.strokeStyle='rgba(255,255,255,.16)';ctx.setLineDash([4,8]);ctx.beginPath();ctx.arc(0,0,55,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);for(let k=0;k<8;k++){const a2=rad(k*45),on=Math.abs(((norm(m.a)-k*45+540)%360)-180)<.5;ctx.strokeStyle=on?glow:'rgba(255,255,255,.3)';ctx.lineWidth=on?3:1.3;ctx.beginPath();ctx.moveTo(Math.cos(a2)*45,Math.sin(a2)*45);ctx.lineTo(Math.cos(a2)*63,Math.sin(a2)*63);ctx.stroke();ctx.fillStyle=on?glow:'rgba(255,255,255,.45)';ctx.font='800 9px system-ui';ctx.textAlign='center';ctx.fillText(k*45,Math.cos(a2)*77,Math.sin(a2)*77)}ctx.restore()}});
+ requestAnimationFrame(()=>{if(document.getElementById('gxv-play')===root)draw(performance.now())})}
+ draw(performance.now());
+ function liveCheck(){if(!document.getElementById('gxv-play')||won)return;if(moves>0)check();requestAnimationFrame(liveCheck)}
+ requestAnimationFrame(liveCheck);
+}
+try{const current=localStorage.getItem('prism-skin');if(current) {let owned=JSON.parse(localStorage.getItem('prism-owned')||'[]');if(!Array.isArray(owned))owned=[];if(!owned.includes(current)){owned.push(current);localStorage.setItem('prism-owned',JSON.stringify(owned));}}}catch{}
+window.goboOpenSkins=openSkins;window.goboOpenEvent=eventMenu;
+document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-tool-skins],[data-home-skins]');if(t){e.preventDefault();e.stopPropagation();openSkins()}},true);
+document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-tool-event],[data-home-event]');if(t){e.preventDefault();e.stopPropagation();eventMenu()}},true);
+document.addEventListener('pointerdown',e=>{const t=e.target?.closest?.('[data-event-skins]');if(t){e.preventDefault();e.stopPropagation();openSkins()}},true);
+})();
+
+</script>
 <style id="gobo-v7-fixes">
 /* V7: one navigation layer, hidden until the real home screen exists */
 #gobo-tools{display:none!important;}
@@ -394,6 +483,8 @@ Error generating stack: `+u.message+`
 #gobo-home-nav .home-nav-shop{background:linear-gradient(135deg,#5b4bea,#7c3aed);color:#fff;box-shadow:0 10px 24px rgba(99,80,220,.22)}
 #gobo-home-nav .home-nav-skins{background:linear-gradient(135deg,#147fe8,#2563eb);color:#fff;box-shadow:0 10px 24px rgba(37,99,235,.22)}
 #gobo-home-nav .home-nav-daily{background:rgba(255,255,255,.09);color:#fff}
+#gobo-home-nav .home-nav-event{background:linear-gradient(135deg,#0369a1,#22d3ee);color:#03111e;box-shadow:0 10px 24px rgba(34,211,238,.22)}
+#gobo-home-nav .home-nav-event em{position:absolute;right:7px;top:5px;font-style:normal;font-size:6px;padding:3px 4px;border-radius:999px;background:#e0f2fe;color:#075985;letter-spacing:.04em}
 #gobo-home-nav .home-nav-icon{font-size:17px;line-height:1}
 #gobo-home-nav .home-nav-label{font-size:9px;letter-spacing:.04em}
 .gobo-old-home-buttons{display:none!important}
@@ -420,6 +511,7 @@ Error generating stack: `+u.message+`
         <button class="home-nav-shop" data-home-shop><span class="home-nav-icon">💳</span><span class="home-nav-label">SHOP</span></button>
         <button class="home-nav-skins" data-home-skins><span class="home-nav-icon">✨</span><span class="home-nav-label">SKINS</span></button>
         <button class="home-nav-daily" data-home-daily><span class="home-nav-icon">✦</span><span class="home-nav-label">DAILY</span></button>
+        <button class="home-nav-event" data-home-event><em>LIMITIERT</em><span class="home-nav-icon">❄️</span><span class="home-nav-label">WEIHNACHTEN</span></button>
         `;
       nav.style.position="relative"; nav.style.zIndex="5";
       nav.style.marginTop="18px";
@@ -429,6 +521,7 @@ Error generating stack: `+u.message+`
       nav.querySelector('[data-home-shop]').onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();if(typeof window.goboOpenCashShop==='function'){window.goboOpenCashShop();}};
       nav.querySelector('[data-home-skins]').onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();if(typeof window.goboOpenSkins==='function'){window.goboOpenSkins();}};
       nav.querySelector('[data-home-daily]').onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();const b=oldGrid?.querySelectorAll('button')?.[2];if(b)b.click();};
+      nav.querySelector('[data-home-event]').onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();window.goboOpenEvent?.();};
     }
     if(nav.parentElement!==holder){holder.appendChild(nav);}
     document.getElementById('gobo-tools')?.classList.remove('gobo-visible');
@@ -442,6 +535,7 @@ Error generating stack: `+u.message+`
     ev.preventDefault(); ev.stopPropagation();
     if(b.matches('[data-home-shop]')) window.goboOpenCashShop?.();
     else if(b.matches('[data-home-skins]')) window.goboOpenSkins?.();
+    else if(b.matches('[data-home-event]')) window.goboOpenEvent?.();
     else if(b.matches('[data-home-levels]')) { const root=document.getElementById('root'); const play=[...root.querySelectorAll('button')].find(x=>x.textContent.trim().startsWith('PLAY')); const grid=play?.parentElement?.querySelector('.grid'); grid?.querySelector('button')?.click(); }
     else if(b.matches('[data-home-daily]')) { const root=document.getElementById('root'); const play=[...root.querySelectorAll('button')].find(x=>x.textContent.trim().startsWith('PLAY')); const grid=play?.parentElement?.querySelector('.grid'); grid?.querySelectorAll('button')?.[2]?.click(); }
   },true);
@@ -450,5 +544,19 @@ Error generating stack: `+u.message+`
 })();
 </script>
 
+<style id="gobo-christmas-event">
+#gxv-event-menu .gxv-panel,#gx-skins-screen .gxv-panel{background:linear-gradient(155deg,#061225,#0b1b35 58%,#102b42)!important}
+#gxv-event-menu .gxv-panel header span,#gxv-event-menu .gxv-level span{color:#7dd3fc!important}
+#gxv-event-menu .gxv-level:hover{border-color:#67e8f9aa!important}
+#gxv-event-menu .gxv-wide{background:linear-gradient(90deg,#0284c7,#22d3ee)!important;color:#03111e!important}
+#gxv-event-menu .gxv-eventstats>div{background:#7dd3fc0c;border-color:#7dd3fc22}
+#gxv-play{background:#061225!important}
+#gxv-play .gxv-play-bg{background:radial-gradient(ellipse at top,#123456 0%,#061225 72%)!important}
+#gxv-play .gxv-side.hero>span{color:#7dd3fc!important}
+#gxv-play .gxv-footer-btn{border-color:#7dd3fc44!important}
+#gxv-event-menu .gxv-panel:after,#gxv-play:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2147483646;opacity:.34;background-image:radial-gradient(2px 2px at 20px 30px,#fff 99%,transparent),radial-gradient(2px 2px at 90px 140px,#bae6fd 99%,transparent),radial-gradient(1.5px 1.5px at 160px 80px,#fff 99%,transparent),radial-gradient(2px 2px at 210px 190px,#e0f2fe 99%,transparent);background-size:240px 240px;animation:gobo-snowfall 12s linear infinite}
+@keyframes gobo-snowfall{from{background-position:0 -240px}to{background-position:0 240px}}
+@media(max-width:600px){#gxv-event-menu .gxv-panel{padding:12px!important}#gxv-event-menu .gxv-panel h1{font-size:25px!important}}
+</style>
 </body>
 </html>
