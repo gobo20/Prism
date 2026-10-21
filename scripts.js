@@ -202,6 +202,8 @@ Error generating stack: `+u.message+`
 ;
 
 (function(){
+  const getGems=()=>parseInt(localStorage.getItem('gobogames-gems')||'0')||0;
+  const setGems=(v)=>{localStorage.setItem('gobogames-gems',String(Math.max(0,Math.floor(v))))};
   function esc(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
   function toast(t){let el=document.getElementById('gobo-toast');if(!el){el=document.createElement('div');el.id='gobo-toast';document.body.appendChild(el)}el.textContent=t;el.classList.add('show');clearTimeout(window.__goboToast);window.__goboToast=setTimeout(()=>el.classList.remove('show'),2400)}
   function modal(title,html,accent){
