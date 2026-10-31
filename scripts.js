@@ -212,13 +212,27 @@ Error generating stack: `+u.message+`
     document.body.appendChild(m);m.querySelector('.gx-close').onclick=()=>m.remove();m.querySelector('.gx-backdrop').onclick=()=>m.remove();return m;
   }
   function cashShop(){
-    modal('💳 Echtgeld-Shop',`<div class="gx-hero gx-money"><div class="gx-hero-icon">€</div><div><b>Gems & Coins</b><p>Die Preise werden hier übersichtlich angezeigt. In dieser HTML-Version ist noch <strong>kein echter Zahlungsanbieter</strong> verbunden.</p></div></div><div class="gx-grid">
-      <div class="gx-product"><div class="gx-product-icon">💎</div><b>100 Gems</b><strong>1,00 €</strong><span>Premium-Währung</span><button class="gx-buy" data-money="100 Gems">KAUFEN</button></div>
-      <div class="gx-product"><div class="gx-product-icon">💎</div><b>550 Gems</b><strong>5,00 €</strong><span>kleiner Bonus</span><button class="gx-buy" data-money="550 Gems">KAUFEN</button></div>
-      <div class="gx-product"><div class="gx-product-icon">●</div><b>200 Coins</b><strong>1,00 €</strong><span>normale Währung</span><button class="gx-buy" data-money="200 Coins">KAUFEN</button></div>
-      <div class="gx-product"><div class="gx-product-icon">✨</div><b>Premium Pack</b><strong>4,99 €</strong><span>Gems + exklusiver Bonus</span><button class="gx-buy" data-money="Premium Pack">KAUFEN</button></div>
-    </div><div class="gx-note">⚠️ Vor echten Käufen müssen Zahlungsdienst, Alters-/Store-Vorgaben, Preisangaben, Widerruf/Rückerstattung und Datenschutz korrekt angebunden werden. Diese Buttons lösen deshalb aktuell keine Zahlung aus.</div>`, '#7C3AED');
-    document.querySelectorAll('.gx-buy').forEach(b=>b.onclick=()=>toast('💳 Echtgeld-Shop: Zahlungsanbieter noch nicht verbunden.'));
+    const products=[
+      {id:'gems100',name:'100 Gems',price:'1,00 €',icon:'💎',detail:'100 Gems',gems:100,coins:0},
+      {id:'gems550',name:'550 Gems',price:'5,00 €',icon:'💎',detail:'50 Gems Bonus inklusive',gems:550,coins:0},
+      {id:'coins200',name:'200 Coins',price:'1,00 €',icon:'●',detail:'200 Coins',gems:0,coins:200},
+      {id:'premium',name:'Premium Pack',price:'4,99 €',icon:'✨',detail:'500 Gems + 500 Coins (Demo)',gems:500,coins:500}
+    ];
+    modal('🧪 Demo-Shop',`<div class="gx-hero gx-money"><div class="gx-hero-icon">🧪</div><div><b>Testkäufe – keine echte Zahlung</b><p>Dieser Shop simuliert einen Kauf lokal auf diesem Gerät. Es werden keine Zahlungsdaten abgefragt und kein Geld abgebucht.</p></div></div><div class="gx-grid">
+      ${products.map(p=>`<div class="gx-product"><div class="gx-product-icon">${p.icon}</div><b>${p.name}</b><strong>${p.price}</strong><span>${p.detail}</span><button class="gx-buy" data-demo-buy="${p.id}">TESTKAUF</button></div>`).join('')}
+    </div><div class="gx-note">DEMO-MODUS: Käufe werden nur in localStorage gespeichert und sind nicht auf andere Geräte übertragbar. Die angezeigten Euro-Beträge sind Platzhalter und werden niemals belastet.</div>`, '#7C3AED');
+    const m=document.getElementById('gobo-extra-modal');
+    m.querySelectorAll('[data-demo-buy]').forEach(b=>b.onclick=()=>{
+      const p=products.find(x=>x.id===b.dataset.demoBuy);if(!p)return;
+      const label=p.name;
+      if(!confirm('Demo-Kauf testen: '+label+'?\nEs wird KEINE echte Zahlung ausgelöst.'))return;
+      if(p.gems)setGems(getGems()+p.gems);
+      if(p.coins){const balance=parseInt(localStorage.getItem('prism-coins')||'0',10)||0;localStorage.setItem('prism-coins',String(balance+p.coins));}
+      let history=[];try{history=JSON.parse(localStorage.getItem('gobogames-demo-purchases')||'[]')}catch{}if(!Array.isArray(history))history=[];
+      history.push({product:p.id,name:p.name,at:new Date().toISOString(),mode:'demo'});
+      localStorage.setItem('gobogames-demo-purchases',JSON.stringify(history.slice(-50)));
+      m.remove();toast('✓ Demo-Kauf erfolgreich: '+p.detail);
+    });
   }
   function skins(){
     const gems=getGems(), all=(window.GoboGemSkins||[]).filter(x=>!x.event);
